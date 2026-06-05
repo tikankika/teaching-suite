@@ -1,0 +1,46 @@
+{
+  "name": "teaching-suite",
+  "version": "0.8.0",
+  "description": "MCP server for teacher workflow support",
+  "type": "module",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tikankika/teaching-suite.git"
+  },
+  "author": "Niklas Karlsson",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "homepage": "https://github.com/tikankika/teaching-suite#readme",
+  "bugs": {
+    "url": "https://github.com/tikankika/teaching-suite/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "teacher",
+    "education",
+    "lesson-planning",
+    "obsidian",
+    "claude-desktop"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "test": "node --experimental-vm-modules node_modules/vitest/vitest.mjs --run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^4.1.8"
+  }
+}
