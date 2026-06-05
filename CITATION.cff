@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: "Teaching Suite"
+message: "If you use this software in your research, please cite it as below."
+type: software
+authors:
+  - given-names: Niklas
+    family-names: Karlsson
+    orcid: ""
+repository-code: "https://github.com/tikankika/teaching-suite"
+url: "https://github.com/tikankika/teaching-suite"
+license: PolyForm-Noncommercial-1.0.0
+version: "0.5.0"
+keywords:
+  - educational-technology
+  - mcp-server
+  - teacher-reflection
+  - lesson-planning
+  - pedagogical-scaffolding
+  - reflective-practice
+abstract: >-
+  An MCP server that scaffolds guided processes for teachers — capturing
+  ideas, reflecting on lessons, planning teaching, and tracking pedagogical
+  goals across lesson, course, and profession cycles. Process scaffolding,
+  not automation: the teacher thinks, the server structures. Pedagogical
+  knowledge lives as methodology in markdown read by an AI assistant, while
+  the MCP tools stay generic. Built for use with AI assistants over stdio,
+  with all file operations locked to a workspace directory.

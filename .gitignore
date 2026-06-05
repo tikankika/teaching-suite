@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+*.code-workspace
+
+# Claude Code dev-support — local only, never published (B7 exclusion: .claude/ stays out of the public artifact)
+.claude/
+
+# Local MCP server config (contains absolute paths)
+.mcp.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# ========================================
+# PRIVATE: Internal development files
+# ========================================
+
+# ACDM development state
+.acdm/
+
+# Internal discovery docs
+docs/discovery/
+
+# Private notes
+*.private.md
+*.local.md
+
+# Chat transcripts
+chat_transcripts/
+
+# Internal analysis/handoff docs (root-level only)
+/ANALYSIS_*
+/HANDOFF_*
+proto_test*
+
+# edusafe scan output — contains the names you reviewed; NEVER commit
+/scan_blocklist.txt
+/scan_acceptlist.txt
+/COVERAGE_*
+
+# ACDM-specific (personal tooling, not project content)
+.claude/rules/acdm-workflow.md
