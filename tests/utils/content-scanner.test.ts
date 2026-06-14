@@ -26,7 +26,7 @@ describe('scanForInternalData', () => {
 
   describe('high severity — GDPR sensitive data', () => {
     it('should detect "personnummer" keyword', () => {
-      const content = 'Elevens personnummer: 200801011234';
+      const content = 'Elevens personnummer: ÅÅÅÅMMDD-XXXX';
       const warnings = scanForInternalData(content);
 
       expect(warnings).toHaveLength(1);
