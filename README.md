@@ -50,11 +50,16 @@ How they fit together over one teaching cycle:
                         (aggregate_logs unifies the timeline)
 ```
 
-**Separate folders, one practice.** Each tool writes plain Markdown in its own
-Nextcloud workspace. The teaching side and the assessment side are deliberately
-*separate* folders, so student work never lands in the course workspace; only
-anonymised *insights about teaching* flow from Assessment Suite back to Teaching
-Suite. Syncing those folders carries your practice across machines.
+**Your folders, your files.** Everything every tool writes is plain Markdown in your
+own Nextcloud workspace — no database, no lock-in. The files are the source of truth
+and stay readable on their own, with or without the tools. The teaching side and the
+assessment side are deliberately *separate* folders, so student work never lands in the
+course workspace; only anonymised *insights about teaching* flow from Assessment Suite
+back to Teaching Suite. Point an Obsidian vault at a workspace (one per side, to keep the
+data boundary intact) and your Markdown becomes a browsable, linkable web of your
+practice — richer still where a tool writes `[[wikilinks]]` and `#tags`, as Teaching
+Suite does. Sync the folders — for example via Nextcloud — and they follow you across
+machines.
 
 All tools are licensed under PolyForm Noncommercial 1.0.0.
 
