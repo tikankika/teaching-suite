@@ -205,6 +205,7 @@ The real privacy guarantees are the `--workspace` lockdown and the absence of ne
 
 ## Documentation
 
+- [docs/TEACHER_GUIDE.md](docs/TEACHER_GUIDE.md) - How to work with Teaching Suite as a teacher
 - [CLAUDE.md](CLAUDE.md) - Architecture and tool reference
 - [ROADMAP.md](ROADMAP.md) - Direction towards 1.0
 - [CHANGELOG.md](CHANGELOG.md) - Release history
