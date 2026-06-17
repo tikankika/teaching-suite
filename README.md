@@ -63,9 +63,9 @@ machines.
 
 All tools are licensed under PolyForm Noncommercial 1.0.0.
 
-> You are reading the **Teaching Suite** README. Assessment Suite and
-> QuestionForge are sibling projects in the same ecosystem; links will be added
-> once their repositories are public.
+> You are reading the **Teaching Suite** README — see also
+> [Assessment Suite](https://github.com/tikankika/assessment-suite) and
+> [QuestionForge](https://github.com/tikankika/question-forge).
 
 ## Features
 
