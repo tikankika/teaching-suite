@@ -209,15 +209,6 @@ function parseYamlFrontmatter(content: string): Record<string, unknown> {
   }
 }
 
-function findCanonicalType(fileType: string): string | null {
-  for (const [canonical, aliases] of Object.entries(TYPE_ALIASES)) {
-    if (aliases.includes(fileType)) {
-      return canonical;
-    }
-  }
-  return null;
-}
-
 function matchesTopic(frontmatter: Record<string, unknown>, topic: string, content: string): boolean {
   const lower = topic.toLowerCase();
 
@@ -409,7 +400,7 @@ export async function findContext(input: unknown): Promise<FindContextOutput> {
         if (fileDate && fileDate < since) continue;
       }
 
-      const canonical = canonicalMap.get(matchedType) || findCanonicalType(matchedType) || matchedType;
+      const canonical = canonicalMap.get(matchedType) || matchedType;
 
       dirResults.push({
         path: filePath,

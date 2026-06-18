@@ -252,12 +252,19 @@ export async function contextLoad(input: unknown): Promise<ContextLoadOutput> {
     }
   }
 
-  // Read config files (only if a config dir was found)
-  const claudeMd = hasConfig ? await readFileOrNull(path.join(configDir, 'CLAUDE.md')) : null;
-  const courseContext = hasConfig ? await readFileOrNull(path.join(configDir, 'course_context.md')) : null;
+  // Read config + project-root files. These have no data dependency on each
+  // other, so issue them together rather than awaiting one at a time — this
+  // tool runs at the start of every session. (Config files only if a config
+  // dir was found.)
+  const [claudeMd, courseContext, loRaw, stateRaw, sourcesRaw] = await Promise.all([
+    hasConfig ? readFileOrNull(path.join(configDir, 'CLAUDE.md')) : Promise.resolve(null),
+    hasConfig ? readFileOrNull(path.join(configDir, 'course_context.md')) : Promise.resolve(null),
+    hasConfig ? readFileOrNull(path.join(configDir, 'learning_objectives.yaml')) : Promise.resolve(null),
+    readFileOrNull(path.join(workspace, 'project_state.json')),
+    readFileOrNull(path.join(workspace, 'sources.yaml')),
+  ]);
 
-  // Read learning objectives register (RFC-014)
-  const loRaw = hasConfig ? await readFileOrNull(path.join(configDir, 'learning_objectives.yaml')) : null;
+  // Learning objectives register (RFC-014)
   let learningObjectives: Record<string, unknown> | null = null;
   if (loRaw) {
     try {
@@ -267,8 +274,6 @@ export async function contextLoad(input: unknown): Promise<ContextLoadOutput> {
     }
   }
 
-  // Read project root files
-  const stateRaw = await readFileOrNull(path.join(workspace, 'project_state.json'));
   let projectState: Record<string, unknown> | null = null;
   if (stateRaw) {
     try {
@@ -278,7 +283,6 @@ export async function contextLoad(input: unknown): Promise<ContextLoadOutput> {
     }
   }
 
-  const sourcesRaw = await readFileOrNull(path.join(workspace, 'sources.yaml'));
   const sourcesSummary = sourcesRaw ? summariseSources(sourcesRaw) : null;
 
   // Read process log for course_v2 / v3 workspaces (any config source other than 'none')
