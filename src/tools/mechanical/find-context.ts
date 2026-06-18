@@ -94,12 +94,12 @@ const TYPE_ALIASES: Record<string, string[]> = {
   'other':                  ['other'],
 };
 
-const SEARCH_DIRS: string[] = [
+export const SEARCH_DIRS: string[] = [
   // Flat structure (current standard)
   'Reflections', 'Reflektioner',
   'Lesson_Plans', 'Lektions planeringar',
   'Ideas', 'Idéer',
-  'Notes', 'Anteckningar',
+  'Notes', 'Anteckningar', 'Memos',
   'Planning', 'Analysis',
   'Decisions', 'Documentation',
   'Transcripts', 'Misc',
@@ -140,6 +140,7 @@ const DIR_TYPE_MAP: Record<string, string> = {
   'Idéer': 'idea',
   'Notes': 'note',
   'Anteckningar': 'note',
+  'Memos': 'note',
   'Planning': 'course_plan',
   'Analysis': 'analysis',
   'Decisions': 'decision',

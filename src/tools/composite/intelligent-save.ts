@@ -7,6 +7,7 @@ import { validatePathInWorkspace, getServerWorkspace } from '../core/workspace.j
 import { appendProcessEvent, type ProcessEventType } from '../../utils/process-log.js';
 import { extractTitle } from '../../utils/text-helpers.js';
 import { fileExists, ensureDirectory } from '../../utils/file-helpers.js';
+import { CONTENT_TYPE_DIRECTORIES, type ContentTypeDirectory } from '../../utils/content-types.js';
 
 // ============================================================================
 // TYPES & SCHEMAS
@@ -126,68 +127,31 @@ export interface IntelligentSaveOutput {
 // CONFIGURATION
 // ============================================================================
 
-const DEFAULT_DIRECTORIES: Record<ContentType, string> = {
-  analysis: 'Analysis/',
-  reflection: 'Reflections/',
-  lesson_plan: 'Lesson_Plans/',
-  course_plan: 'Planning/',
-  idea: 'Ideas/',
-  decision: 'Decisions/',
-  documentation: 'Documentation/',
-  note: 'Notes/',
-  transcript_analysis: 'Notes/',
-  synthesis: 'Synteser/',
-  plan: 'Planning/',
-  plan_update: 'Planning/',
-  progress_check: 'Reflections/',
-  conversation_analysis: 'Notes/',
-  other: 'Misc/',
-  // Redesign types
-  deep_analysis: 'Analysis/',
-  material: 'Material/',
-  lesson_summary: 'Analysis/',
-  student_summary: 'Material/Student_Summaries/',
-  // post_lesson_auto outputs
-  content: 'Student_Materials/',
-  recap: 'Student_Materials/',
-  auto_log: 'Analysis/',
-  // v3 cycle outputs (Wave A)
-  bridge_intention: 'Reflections/Bryggor/',
-  pre_course_context_report: 'Planning/',
-  course_evaluation: 'Analysis/',
-  // term_reflection and manifest are workspace-root concepts (above per-course).
-  // suggestDirectory() routes them to getServerWorkspace() rather than the
-  // calling course folder. Path values here are workspace-root-relative.
-  term_reflection: 'Profession/Termin/',
-  manifest: 'Profession/Manifest/',
-};
+// Directory routing is derived from the shared registry in
+// utils/content-types.ts — the single source of truth that find_context's
+// search set is guarded against. See that file for the rationale.
+const _DIRECTORY_REGISTRY = CONTENT_TYPE_DIRECTORIES as Record<ContentType, ContentTypeDirectory>;
+const _registryEntries = Object.entries(_DIRECTORY_REGISTRY) as [ContentType, ContentTypeDirectory][];
+
+const DEFAULT_DIRECTORIES = Object.fromEntries(
+  _registryEntries.map(([type, def]) => [type, def.directory]),
+) as Record<ContentType, string>;
 
 /**
  * Content types that live at workspace-root, not inside a course folder.
- * suggestDirectory() routes these to getServerWorkspace() — the path in
- * DEFAULT_DIRECTORIES is treated as workspace-root-relative for these types.
- *
- * Per the maintainer + Cowork (2026-05-05): manifest and term_reflection both span
- * across courses — manifest is the teacher's own pedagogical declaration,
- * term_reflection is integrated across all courses in the term. Saving them
- * inside one course folder fragments the teacher's reflective practice.
+ * suggestDirectory() routes these to getServerWorkspace(); the registry path
+ * is treated as workspace-root-relative for them.
  */
-const WORKSPACE_ROOT_TYPES: ReadonlySet<ContentType> = new Set<ContentType>([
-  'manifest',
-  'term_reflection',
-]);
+const WORKSPACE_ROOT_TYPES: ReadonlySet<ContentType> = new Set(
+  _registryEntries.filter(([, def]) => def.scope === 'workspace_root').map(([type]) => type),
+);
 
-/**
- * Course_v2 overrides — only entries that differ from DEFAULT_DIRECTORIES.
- *
- * After PR #31 (project_init folder structure for v3) the workspace layout
- * matches v3 cycle docs: Planning/ replaces the old Course_Planning/. The
- * previous course_plan: 'Course_Planning/' override is removed — DEFAULT
- * now serves the right path for both course and course_v2.
- */
-const COURSE_V2_OVERRIDES: Partial<Record<ContentType, string>> = {
-  note: 'Memos/',
-};
+/** Course_v2 directory overrides — only types whose registry entry differs. */
+const COURSE_V2_OVERRIDES: Partial<Record<ContentType, string>> = Object.fromEntries(
+  _registryEntries
+    .filter(([, def]) => def.courseV2Directory)
+    .map(([type, def]) => [type, def.courseV2Directory!]),
+) as Partial<Record<ContentType, string>>;
 
 // ============================================================================
 // HELPER FUNCTIONS
