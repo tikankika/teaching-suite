@@ -166,15 +166,6 @@ const COURSE_V2_FOLDERS = [
   'activity_logs',
 ];
 
-const TEACHING_CYCLE_DESCRIPTIONS: Record<string, string> = {
-  '00_shared_principles.md': 'Shared principles: reflective practice, evidence-based, student-centered',
-  '01_context_gathering.md': 'Context: search strategy, 3+5 problem, structured retrieval',
-  '02_pre_lesson_planning.md': 'Lesson planning: 7-phase process, default structures, timing',
-  '03_post_lesson_reflection.md': 'Post-lesson: 4-phase reflection, transcript analysis, insights',
-  '04_lesson_metadata.md': 'Metadata: YAML spec, tags, wikilinks, search strategies',
-  '05_pedagogical_foundation.md': 'Reference: theoretical grounding (Schön, Kolb, Hattie)',
-};
-
 // ============================================================================
 // HELPERS
 // ============================================================================
@@ -194,7 +185,7 @@ async function copyMethodologyFolder(
     await fs.copyFile(src, dst);
     docs.push({
       filename,
-      description: TEACHING_CYCLE_DESCRIPTIONS[filename] || filename,
+      description: filename,
     });
   }
 
@@ -357,8 +348,7 @@ async function ensureCentralMethodology(
     // force_update=true + local is older — back up and overwrite.
     const backupTimestamp = new Date()
       .toISOString()
-      .replace(/[:.]/g, '-')
-      .replace('Z', 'Z');
+      .replace(/[:.]/g, '-');
     const backupPath = path.join(teachingSuiteRoot, `methodology.backup-${backupTimestamp}`);
     try {
       // Atomic rename — old folder becomes the backup, then fresh copy goes

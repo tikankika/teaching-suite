@@ -9,7 +9,7 @@ import { z } from 'zod';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { fileURLToPath } from 'url';
-import { readFileOrNull } from '../../utils/file-helpers.js';
+import { fileExists } from '../../utils/file-helpers.js';
 import { validatePathInWorkspace, getServerWorkspace } from '../core/workspace.js';
 
 // ============================================================================
@@ -237,7 +237,8 @@ const SERVER_PATHS: Record<string, string> = {
 // HELPERS
 // ============================================================================
 
-// readFileOrNull imported from utils/file-helpers.ts
+// fileExists imported from utils/file-helpers.ts — used as a lightweight
+// existence probe (no full read) while resolving the methodology doc path.
 
 // ============================================================================
 // MAIN
@@ -273,7 +274,7 @@ async function resolveMethodologyPath(
       processInfo.folder,
       processInfo.file,
     );
-    if (await readFileOrNull(centralPath)) {
+    if (await fileExists(centralPath)) {
       return { path: centralPath, source: 'workspace', readable: true };
     }
   }
@@ -286,7 +287,7 @@ async function resolveMethodologyPath(
     ];
     for (const base of methodologyBases) {
       const candidate = path.join(base, processInfo.folder, processInfo.file);
-      if (await readFileOrNull(candidate)) {
+      if (await fileExists(candidate)) {
         return { path: candidate, source: 'workspace', readable: true };
       }
     }
@@ -298,7 +299,7 @@ async function resolveMethodologyPath(
   const serverFolder = SERVER_PATHS[processInfo.folder];
   if (!serverFolder) return null;
   const candidate = path.join(serverFolder, processInfo.file);
-  if (await readFileOrNull(candidate)) {
+  if (await fileExists(candidate)) {
     return { path: candidate, source: 'server', readable: false };
   }
   return null;
