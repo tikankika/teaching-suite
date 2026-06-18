@@ -609,6 +609,57 @@ describe('intelligentSave — journal update', () => {
 });
 
 // ============================================================================
+// WORKSPACE-ROOT CONTENT TYPES (manifest, term_reflection)
+// ============================================================================
+
+describe('intelligentSave — workspace-root types validate against server root', () => {
+  let serverRoot: string;
+  let courseFolder: string;
+
+  beforeEach(async () => {
+    vi.setSystemTime(new Date('2026-03-18T10:00:00Z'));
+    serverRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'teaching-suite-root-'));
+    // The documented multi-course setup: server locked to the courses root,
+    // each per-course session passing a narrower course subfolder as workspace.
+    courseFolder = path.join(serverRoot, 'KURS101');
+    await fs.mkdir(courseFolder, { recursive: true });
+    setServerWorkspace(serverRoot);
+  });
+
+  afterEach(async () => {
+    vi.useRealTimers();
+    await fs.rm(serverRoot, { recursive: true, force: true });
+  });
+
+  it('saves a manifest to the server-root Profession/ folder when called from a narrow course workspace', async () => {
+    const result = await intelligentSave({
+      content: '# Pedagogiskt manifest',
+      content_type: 'manifest',
+      context: { workspace: courseFolder },
+      auto_confirm: true,
+    });
+
+    expect(result.success).toBe(true);
+    // Routed to the server root, not under the calling course folder.
+    expect(result.filepath).toContain(path.join(serverRoot, 'Profession', 'Manifest'));
+    expect(result.filepath!.startsWith(courseFolder + path.sep)).toBe(false);
+    await expect(fs.readFile(result.filepath!, 'utf-8')).resolves.toContain('Pedagogiskt manifest');
+  });
+
+  it('saves a term_reflection to the server-root Profession/ folder from a narrow course workspace', async () => {
+    const result = await intelligentSave({
+      content: '# Terminsreflektion',
+      content_type: 'term_reflection',
+      context: { workspace: courseFolder },
+      auto_confirm: true,
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.filepath).toContain(path.join(serverRoot, 'Profession'));
+  });
+});
+
+// ============================================================================
 // SOFT VALIDATION
 // ============================================================================
 

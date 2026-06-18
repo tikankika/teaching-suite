@@ -611,8 +611,16 @@ export async function intelligentSave(input: unknown): Promise<IntelligentSaveOu
     // Content scanner: warn about sensitive data (never blocks)
     const contentWarnings = scanForInternalData(validatedInput.content);
 
-    // Validate path format + workspace containment (uses server workspace as fallback)
-    const pathValidation = await validatePathInWorkspace(full_path, validatedInput.context?.workspace);
+    // Validate path format + workspace containment (uses server workspace as fallback).
+    // Workspace-root types (manifest, term_reflection) were routed to the server
+    // root by suggestDirectory(), so they must validate against the server root —
+    // not the narrow per-course workspace they may have been called from, which
+    // would (fail-closed) reject the legitimate Profession/ path.
+    const validationWorkspace =
+      WORKSPACE_ROOT_TYPES.has(validatedInput.content_type) && getServerWorkspace()
+        ? getServerWorkspace()
+        : validatedInput.context?.workspace;
+    const pathValidation = await validatePathInWorkspace(full_path, validationWorkspace);
     if (!pathValidation.valid) {
       return {
         success: false,
