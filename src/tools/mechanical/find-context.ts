@@ -111,7 +111,8 @@ const SEARCH_DIRS: string[] = [
   'Exams',
   // v3 workspace dirs (added in PR #31)
   'Reflections/Bryggor',
-  'Reflections/Term',
+  'Reflections/Term',        // legacy term-reflection location (back-compat)
+  'Profession/Termin',       // canonical term_reflection write location
   'Profession/Manifest',
   'Student_Materials',
   // Backward compat with Carpenter-style dirs
@@ -167,6 +168,7 @@ const DIR_TYPE_MAP: Record<string, string> = {
   // v3 workspace dirs
   'Reflections/Bryggor': 'bridge_intention',
   'Reflections/Term': 'term_reflection',
+  'Profession/Termin': 'term_reflection',
   'Profession/Manifest': 'manifest',
   'Student_Materials': 'material',
 };

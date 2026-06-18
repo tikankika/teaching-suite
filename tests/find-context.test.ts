@@ -410,6 +410,22 @@ describe('find_context — v3 cycle outputs', () => {
     expect(result.results[0].canonical_type).toBe('manifest');
   });
 
+  it('finds term_reflection in Profession/Termin/ (the canonical write location) via directory fallback', async () => {
+    // intelligent_save routes term_reflection to Profession/Termin/, so
+    // find_context must scan it — not only the legacy Reflections/Term/.
+    await createMdFile('Profession/Termin/HT26_terminsreflektion.md', {}, '# Terminsreflektion HT26');
+
+    const result = await findContext({
+      workspace: workspaceDir,
+      content_types: ['term_reflection'],
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.results.length).toBe(1);
+    expect(result.results[0].canonical_type).toBe('term_reflection');
+    expect(result.results[0].match_source).toBe('directory');
+  });
+
   it('finds pre_course_context_report in Planning/ by filename pattern', async () => {
     await createMdFile('Planning/KURS101_2026_pre_kurs.md', {}, '# Pre-kurs rapport');
 
