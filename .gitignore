@@ -59,7 +59,9 @@ proto_test*
 # edusafe scan output — contains the names you reviewed; NEVER commit
 /scan_blocklist.txt
 /scan_acceptlist.txt
+/scan_shapes.json
 /COVERAGE_*
+/HANDOFF_*
 
 # ACDM-specific (personal tooling, not project content)
 .claude/rules/acdm-workflow.md
