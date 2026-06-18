@@ -131,8 +131,8 @@ describe('suggestDirectory', () => {
   });
 
   it('should join with workspace if provided', () => {
-    const dir = suggestDirectory('idea', '/Users/test/vault');
-    expect(dir).toBe(path.join('/Users/test/vault', 'Ideas/'));
+    const dir = suggestDirectory('idea', '/workspace/vault');
+    expect(dir).toBe(path.join('/workspace/vault', 'Ideas/'));
   });
 
   it('should route v3 cycle outputs to their canonical workspace directories', () => {
@@ -147,8 +147,8 @@ describe('suggestDirectory', () => {
 
   it('should route workspace-root types (manifest, term_reflection) to server workspace, not the calling course folder', async () => {
     const { setServerWorkspace } = await import('../src/tools/core/workspace.js');
-    const serverRoot = '/Users/test/Nextcloud/Courses';
-    const courseFolder = '/Users/test/Nextcloud/Courses/Biologi/KURS201_2026_v3';
+    const serverRoot = '/workspace/Nextcloud/Courses';
+    const courseFolder = '/workspace/Nextcloud/Courses/Biologi/KURS201_2026_v3';
     setServerWorkspace(serverRoot);
 
     // Both should land at server-root, not at courseFolder
