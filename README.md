@@ -8,9 +8,64 @@
 
 > **This is an active development project.** The tool architecture is stable and tested (642 tests across 24 MCP tools). The core reflection cycle — plan → teach → reflect → improve — works end-to-end, with data flowing between three independent MCP servers via the filesystem.
 >
-> **Methodology v3.0** (current): Three nested cycles — *lesson*, *course*, *profession* — grounded in Klafki's didactical analysis, Wiggins & McTighe's Understanding by Design, Schön's reflective practice, Black & Wiliam's formative assessment, and Biesta's pedagogy of subjectification. Each cycle document names its frameworks; `methodology/tensions.md` records the productive tensions between them so design choices stay traceable.
+> **Methodology (draft):** Three nested cycles — *lesson*, *course*, *profession* — drawing on Klafki's didactical analysis, Wiggins & McTighe's Understanding by Design, Schön's reflective practice, Black & Wiliam's formative assessment, and Biesta's pedagogy of subjectification. The frameworks are named but not yet worked through to the theoretical depth a 1.0 would need; `methodology/tensions.md` records the tensions between them. Published at this early stage deliberately — to invite critique.
 >
 > **Validation status:** Validated through the maintainer's own ongoing teaching use. Not yet tested with external teachers; an external pilot is planned.
+
+## Part of a teaching-and-assessment ecosystem
+
+These tools share one philosophy — *teacher-led: scaffolding, not automation* — and
+one design: MCP servers (and one pipeline) that run locally over plain-Markdown
+workspaces, each locked to a folder with no network service of their own. They are
+split along a deliberate data boundary: the **teaching side never holds student
+personal data**, and the **assessment side keeps student work walled off** in its
+own workspace.
+
+| Tool | Role | Side |
+|------|------|------|
+| **edusafe-pipeline** | Anonymise Swedish classroom recordings and transcripts offline (names → pseudonyms) before anything is shared or reused. | Data-safety gate |
+| **Teaching Suite** | Plan lessons, capture ideas, and reflect across lesson, course, and profession cycles. | Teaching — course workspace, no student PII |
+| **QuestionForge** | Author exam questions from what was actually taught and export them to QTI for Inspera. Belongs to the teaching side by data zone (course material, no student data) but runs fully on its own — Teaching Suite is not required. | Teaching — course workspace, no student PII |
+| **Assessment Suite** | Assess open-response answers aspect by aspect, with cited evidence and feedback — the teacher deciding every judgement. | Assessment — separate workspace, student data stays here |
+
+How they fit together over one teaching cycle:
+
+```
+   edusafe-pipeline     anonymise recordings/transcripts (offline, names → pseudonyms)
+        │
+        ▼
+   Teaching Suite       plan lessons, capture ideas, reflect
+        │
+        ▼
+   QuestionForge        author exam questions from what was taught
+        │
+        ▼
+   Inspera / QTI LMS    exam delivered and sat
+        │
+        ▼
+   Assessment Suite     assess answers; reports and formative feedback
+        │               (student work stays in this workspace)
+        ▼
+   Teaching Suite       only teacher insights flow back — by design, no student data
+                        (aggregate_logs unifies the timeline)
+```
+
+**Your folders, your files.** Everything every tool writes is plain Markdown in your
+own Nextcloud workspace — no database, no lock-in. The files are the source of truth
+and stay readable on their own, with or without the tools. The teaching side and the
+assessment side are deliberately *separate* folders, so student work never lands in the
+course workspace; only anonymised *insights about teaching* flow from Assessment Suite
+back to Teaching Suite. Point an Obsidian vault at a workspace (one per side, to keep the
+data boundary intact) and your Markdown becomes a browsable, linkable web of your
+practice — richer still where a tool writes `[[wikilinks]]` and `#tags`, as Teaching
+Suite does. Sync the folders — for example via Nextcloud — and they follow you across
+machines.
+
+All tools are licensed under PolyForm Noncommercial 1.0.0.
+
+> You are reading the **Teaching Suite** README — see also
+> [Assessment Suite](https://github.com/tikankika/assessment-suite) and
+> [QuestionForge](https://github.com/tikankika/question-forge).
 
 ## Features
 
@@ -49,6 +104,16 @@ Add to `claude_desktop_config.json`:
 ```
 
 > **Important:** The `--workspace` flag is required. Without it, all file operations are rejected. Point it to your courses/teaching folder.
+
+## Workflow: how the pieces fit
+
+Teaching Suite spans three surfaces over a single folder of plain Markdown files. Understanding how they relate is the key to using it well.
+
+- **Local files — the source of truth.** Everything Teaching Suite produces is a plain Markdown file in your workspace folder: ideas, lesson plans, reflections, logs. Nothing is locked in a database or the cloud — the folder is yours and stays readable without any of the other tools.
+- **Claude Desktop — the engine.** The MCP server runs inside Claude Desktop and reads and writes those files via the `--workspace` flag. This is where the work happens: you think and converse, the methodology guides the conversation, and the tools structure the result onto disk.
+- **Obsidian — the reading lens (optional).** Point an Obsidian vault at the same folder and the `[[wikilinks]]` and `#tags` Teaching Suite writes become a navigable web of your teaching practice. Obsidian does not run the tools; it is a way to read, link, and browse what is already on disk.
+
+In short: **Claude Desktop writes, the folder stores, Obsidian reads** — one folder, three views. Sync the folder (e.g. via Nextcloud) and the same files follow you across machines.
 
 ## Tools Overview
 
@@ -140,17 +205,12 @@ The real privacy guarantees are the `--workspace` lockdown and the absence of ne
 
 ## Documentation
 
+- [docs/TEACHER_GUIDE.md](docs/TEACHER_GUIDE.md) - How to work with Teaching Suite as a teacher
 - [CLAUDE.md](CLAUDE.md) - Architecture and tool reference
 - [ROADMAP.md](ROADMAP.md) - Direction towards 1.0
 - [CHANGELOG.md](CHANGELOG.md) - Release history
 - [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 - [docs/decisions/](docs/decisions/) - Architecture Decision Records
-
-## Integration
-
-- **Obsidian**: Creates `[[wikilinks]]` and `#tags`
-- **Claude Desktop**: MCP server via stdio
-- **Nextcloud**: File sync compatible
 
 ## Requirements
 
