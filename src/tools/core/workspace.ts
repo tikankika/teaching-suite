@@ -92,8 +92,9 @@ async function resolveRealPath(filePath: string): Promise<string> {
  * Both inputs must already be resolved through fs.realpath() — this is a
  * pure string comparison, not a filesystem operation.
  *
- * Adds a trailing path separator so workspace="/home/user" does not match
- * "/home/username/..." — a sibling-directory prefix attack.
+ * Adds a trailing path separator so a workspace path does not match a sibling
+ * whose name merely starts with it (e.g. ".../proj" vs ".../project") — a
+ * sibling-directory prefix attack.
  */
 function isContainedIn(child: string, parent: string): boolean {
   if (child === parent) return true;
