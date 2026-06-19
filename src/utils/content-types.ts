@@ -73,3 +73,21 @@ export const CONTENT_TYPE_DIRECTORIES: Record<string, ContentTypeDirectory> = {
   term_reflection: { directory: 'Profession/Termin/', scope: 'workspace_root' },
   manifest: { directory: 'Profession/Manifest/', scope: 'workspace_root' },
 };
+
+/**
+ * Workspace-root content types as `{ type, directory }`, with the trailing
+ * slash stripped from each directory. The single place that answers "which
+ * types live at the workspace root, and where" — consumed by init_profession
+ * (folder creation) and find_context (search set) so neither re-hardcodes the
+ * Profession/* paths and drifts from intelligent_save's write routing.
+ */
+export function workspaceRootDirectoryEntries(): Array<{ type: string; directory: string }> {
+  return Object.entries(CONTENT_TYPE_DIRECTORIES)
+    .filter(([, def]) => def.scope === 'workspace_root')
+    .map(([type, def]) => ({ type, directory: def.directory.replace(/\/$/, '') }));
+}
+
+/** Workspace-root directories (no trailing slash), e.g. ['Profession/Termin', …]. */
+export function workspaceRootDirectories(): string[] {
+  return workspaceRootDirectoryEntries().map((e) => e.directory);
+}
