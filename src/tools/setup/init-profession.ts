@@ -19,6 +19,7 @@ import { z } from 'zod';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { validatePathInWorkspace } from '../core/workspace.js';
+import { workspaceRootDirectories } from '../../utils/content-types.js';
 
 // ============================================================================
 // SCHEMA
@@ -44,11 +45,20 @@ export interface InitProfessionOutput {
 // CONSTANTS
 // ============================================================================
 
-const PROFESSION_FOLDERS = [
-  'Profession',
-  'Profession/Manifest',
-  'Profession/Termin',
-];
+// Derived from the workspace-root content types in the shared registry
+// (manifest, term_reflection) plus their ancestor folders, so this tool can't
+// drift from where intelligent_save actually writes them. Sorted so parents
+// precede children: ['Profession', 'Profession/Manifest', 'Profession/Termin'].
+const PROFESSION_FOLDERS: string[] = (() => {
+  const folders = new Set<string>();
+  for (const dir of workspaceRootDirectories()) {
+    const parts = dir.split('/');
+    for (let i = 1; i <= parts.length; i++) {
+      folders.add(parts.slice(0, i).join('/'));
+    }
+  }
+  return [...folders].sort();
+})();
 
 // ============================================================================
 // MAIN

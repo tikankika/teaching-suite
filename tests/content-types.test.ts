@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { CONTENT_TYPE_DIRECTORIES } from '../src/utils/content-types.js';
+import {
+  CONTENT_TYPE_DIRECTORIES,
+  workspaceRootDirectories,
+} from '../src/utils/content-types.js';
 import { ContentTypeEnum, suggestDirectory } from '../src/tools/composite/intelligent-save.js';
 import { FindContextInputSchema, SEARCH_DIRS } from '../src/tools/mechanical/find-context.js';
 
@@ -41,5 +44,19 @@ describe('content-type registry', () => {
     // looks (the Profession/Termin class of bug). Add the directory to
     // SEARCH_DIRS + DIR_TYPE_MAP, or fix the registry.
     expect(unscanned).toEqual([]);
+  });
+
+  it('exposes workspace-root directories driven by scope (manifest, term_reflection)', () => {
+    // 3b: init_profession and find_context derive their Profession/* dirs from
+    // this, rather than hardcoding their own lists.
+    const types = Object.entries(CONTENT_TYPE_DIRECTORIES)
+      .filter(([, d]) => d.scope === 'workspace_root')
+      .map(([t]) => t)
+      .sort();
+    expect(types).toEqual(['manifest', 'term_reflection']);
+    expect(workspaceRootDirectories().sort()).toEqual([
+      'Profession/Manifest',
+      'Profession/Termin',
+    ]);
   });
 });

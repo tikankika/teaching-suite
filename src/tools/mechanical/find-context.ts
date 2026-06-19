@@ -13,6 +13,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { validatePathInWorkspace } from '../core/workspace.js';
+import { workspaceRootDirectoryEntries } from '../../utils/content-types.js';
 
 // ============================================================================
 // SCHEMA
@@ -112,8 +113,6 @@ export const SEARCH_DIRS: string[] = [
   // v3 workspace dirs (added in PR #31)
   'Reflections/Bryggor',
   'Reflections/Term',        // legacy term-reflection location (back-compat)
-  'Profession/Termin',       // canonical term_reflection write location
-  'Profession/Manifest',
   'Student_Materials',
   // Backward compat with Carpenter-style dirs
   'Synteser', 'Planer',
@@ -128,6 +127,9 @@ export const SEARCH_DIRS: string[] = [
   'Input/Transkript',
   'Input/Teacher_Insights',
   'Output/Reports',
+  // Workspace-root content-type dirs (Profession/*) — derived from the shared
+  // registry so they cannot drift from intelligent_save's write routing.
+  ...workspaceRootDirectoryEntries().map((e) => e.directory),
 ];
 
 // Directory name → canonical type (fallback when no YAML frontmatter)
@@ -169,9 +171,9 @@ const DIR_TYPE_MAP: Record<string, string> = {
   // v3 workspace dirs
   'Reflections/Bryggor': 'bridge_intention',
   'Reflections/Term': 'term_reflection',
-  'Profession/Termin': 'term_reflection',
-  'Profession/Manifest': 'manifest',
   'Student_Materials': 'material',
+  // Workspace-root dirs (Profession/*) — derived from the shared registry.
+  ...Object.fromEntries(workspaceRootDirectoryEntries().map((e) => [e.directory, e.type])),
 };
 
 // Filename patterns → canonical type (fallback when no YAML frontmatter)
