@@ -465,12 +465,18 @@ Methodology är till för att tjäna ditt arbete. När det inte gör det — anv
 
 ## Relaterade dokument
 
-- **`pedagogisk_arkitektur.md`** — arkitekturen, tre cykler, fem spänningar
-- **`lesson/pre_lesson.md`, `post_lesson_auto.md`, `post_lesson_refl.md`, `bridge.md`** — dagligt arbete
-- **`course/pre_course.md`, `design.md`, `conduct.md`, `assessment.md`, `evaluation.md`, `revision.md`** — kursnivå
-- **`profession/term_reflection.md`, `manifest.md`** — professionsnivå
-- **`reflection_frameworks/`** — Brookfield, Gibbs, Driscoll, Kolb (reflektionsmodeller)
-- **`system/`** — `capture-session.md`, `pedagogical_analysis/` (Bloom + key-moment-prompts), `output_conventions/` (confidence-labels + source-attribution)
+Mognadsnivå anges per dokument: **Stabil** (referensmaterial, satt), **Arbetsutkast** (omfattande och i dagligt bruk, teori under revision), **Tidigt utkast** (spec eller skiss, ännu inte operativ).
+
+- **`pedagogisk_arkitektur.md`** — arkitekturen, tre cykler, fem spänningar · *Arbetsutkast*
+- **`lesson/pre_lesson.md`, `post_lesson_auto.md`, `post_lesson_refl.md`, `bridge.md`** — dagligt arbete · *Arbetsutkast*
+- **`course/pre_course.md`, `design.md`, `conduct.md`, `assessment.md`, `evaluation.md`, `revision.md`** — kursnivå · *Arbetsutkast*
+- **`profession/term_reflection.md`, `manifest.md`** — professionsnivå · *Arbetsutkast*
+- **`shared_principles.md`** — gemensamma principer (v0.5) · *Arbetsutkast*
+- **`reflection_frameworks/`** — Brookfield, Gibbs, Driscoll, Kolb (reflektionsmodeller) · *Stabil*
+- **`system/`** — `capture-session.md`, `pedagogical_analysis/` (Bloom + key-moment-prompts), `output_conventions/` (confidence-labels + source-attribution) · *Stabil*
+- **`synlighetsprincip.md`** — synlighetsprincipen för automation · *Stabil*
+- **`bridges/`** — datakopplingar mellan cyklerna · *Tidigt utkast (väntar på enum-registrering)*
+- **`tensions.md`** — olösta teoretiska spänningar, publicerade tidigt för kritik · *Tidigt utkast*
 
 ---
 

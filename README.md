@@ -12,6 +12,23 @@
 >
 > **Validation status:** Validated through the maintainer's own ongoing teaching use. Not yet tested with external teachers; an external pilot is planned.
 
+### Methodology readiness
+
+The methodology is published as a draft, but maturity varies by area. Every cycle document carries a `status:` field in its front matter; this table summarises where each part stands.
+
+| Area | Readiness | Notes |
+|------|-----------|-------|
+| Lesson cycle (`methodology/lesson/`) | Working draft | Four documents (`pre_lesson`, `post_lesson_auto`, `post_lesson_refl`, `bridge`), substantial and in everyday use; marked `status: draft`. |
+| Course cycle (`methodology/course/`) | Working draft | Six documents, `pre_course` → `revision`; complete in structure, marked `status: draft`. |
+| Profession cycle (`methodology/profession/`) | Working draft | `manifest` and `term_reflection`; substantial, marked `status: draft`. |
+| Foundations (`pedagogisk_arkitektur.md`, `shared_principles.md`, `methodology/README.md`) | Working draft | Architectural spine and operative guide; `shared_principles.md` is v0.5 with theory under continued revision. |
+| Reflection frameworks (`methodology/reflection_frameworks/`) | Stable | Reference cards for Gibbs, Brookfield, Kolb and Driscoll. |
+| System conventions (`methodology/system/`, `synlighetsprincip.md`) | Stable | Output conventions, analysis prompts and the visibility principle — settled reference material. |
+| Cross-cycle bridges (`methodology/bridges/`) | Early draft | Four short specs awaiting enum-registration; not yet operational. |
+| Tensions (`methodology/tensions.md`) | Early draft | Names the unresolved theoretical tensions, published early to invite critique. |
+
+**Readiness key:** **Stable** — settled, used as reference · **Working draft** — substantial and in everyday use, theory still maturing · **Early draft** — a spec or sketch, not yet operational.
+
 ## Part of a teaching-and-assessment ecosystem
 
 These tools share one philosophy — *teacher-led: scaffolding, not automation* — and
