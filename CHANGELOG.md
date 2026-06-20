@@ -8,6 +8,7 @@ All notable changes to Teaching Suite are documented here. The format follows
 
 ### Added
 
+- **Process-name guard (CI test).** `tests/process-name-guard.test.ts` asserts a one-directional contract — every `load_methodology` process name referenced in the public docs (`README.md`, `docs/TEACHER_GUIDE.md`, `methodology/bridges/*.md`) exists in the tool's `z.enum`. It reads two structured sources (the `load_methodology(...)` calls and the methodology table's `Process` column) so a renamed or removed process can no longer leave a published doc pointing teachers at a process the tool rejects. Same family as `tests/content-types.test.ts`; no runtime change to `load_methodology`.
 - **README — "Part of a teaching-and-assessment ecosystem" section.** A shared cross-suite block (edusafe-pipeline, Teaching Suite, QuestionForge, Assessment Suite) describing the deliberate data boundary and how the tools fit over one teaching cycle. Mirrored verbatim across the three suite READMEs; sibling repositories are named without links until they are public.
 
 ### Changed
@@ -22,6 +23,7 @@ All notable changes to Teaching Suite are documented here. The format follows
 
 ### Fixed
 
+- **Two dead process references in bridge methodology docs.** `methodology/bridges/course_to_profession.md` called `load_methodology('manifest_revision')` (no such enum value → `manifest`) and `methodology/bridges/profession_to_lesson.md` called `load_methodology('pre_lesson')` (→ `pre_lesson_planning`). Caught by the new process-name guard; both now point at real enum values.
 - **SECURITY.md — corrected the supported-version table** from 0.8.x to 0.5.x; it had been copied from a sibling project and did not match this product's version.
 
 ## [0.5.0] - 2026-06-06
