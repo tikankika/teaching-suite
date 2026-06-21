@@ -10,30 +10,25 @@
 
 import { z } from 'zod';
 import * as fs from 'fs/promises';
+import type { Dirent } from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { validatePathInWorkspace } from '../core/workspace.js';
-import { workspaceRootDirectoryEntries } from '../../utils/content-types.js';
+import { workspaceRootDirectoryEntries, contentTypeNames } from '../../utils/content-types.js';
 
 // ============================================================================
 // SCHEMA
 // ============================================================================
 
+// Searchable content types are derived from the shared registry (the same
+// single source intelligent_save writes by), so the search side can never drift
+// behind the write side — every type that can be saved can be searched. Pinned
+// by the registry-equality test in tests/content-types.test.ts.
+const SEARCHABLE_CONTENT_TYPES = contentTypeNames() as [string, ...string[]];
+
 export const FindContextInputSchema = z.object({
   workspace: z.string().min(1).describe('Project workspace path'),
-  content_types: z.array(z.enum([
-    // Teaching types
-    'lesson_plan', 'reflection', 'idea', 'note', 'analysis',
-    'course_plan', 'transcript_analysis', 'decision', 'documentation',
-    // Carpenter-compatible canonical types
-    'synthesis', 'plan', 'plan_update', 'progress_check',
-    'conversation_analysis',
-    // v3 cycle outputs (Wave A — match intelligent_save additions)
-    'bridge_intention', 'pre_course_context_report', 'course_evaluation',
-    'term_reflection', 'manifest',
-    // Other
-    'other',
-  ])).describe('Types of content to search for'),
+  content_types: z.array(z.enum(SEARCHABLE_CONTENT_TYPES)).describe('Types of content to search for'),
   topic: z.string().optional().describe('Filter by topic keyword in title or tags'),
   supports: z.string().optional().describe('Filter by course goal or LO code (e.g., "LO15", "G1")'),
   framework: z.string().optional().describe('Filter by pedagogical framework (e.g., "gibbs", "kolb")'),
@@ -114,6 +109,10 @@ export const SEARCH_DIRS: string[] = [
   'Reflections/Bryggor',
   'Reflections/Term',        // legacy term-reflection location (back-compat)
   'Student_Materials',
+  // 3c: course material. Scanned RECURSIVELY (see RECURSIVE_SEARCH_DIRS) so the
+  // teacher's own hand-sorted subtree (Material/Klart, Material/Övningar …) and
+  // Material/Student_Summaries (student_summary's write dir) are all reachable.
+  'Material',
   // Backward compat with Carpenter-style dirs
   'Synteser', 'Planer',
   // Legacy course structure (Input/Process/Output)
@@ -131,6 +130,16 @@ export const SEARCH_DIRS: string[] = [
   // registry so they cannot drift from intelligent_save's write routing.
   ...workspaceRootDirectoryEntries().map((e) => e.directory),
 ];
+
+/**
+ * Search dirs scanned RECURSIVELY (whole subtree), not just their top level.
+ * Material/ is the teacher's hand-sorted material tree — a flat scan would hide
+ * everything below Material/Klart, Material/Övningar, etc. (a silent hole the
+ * teacher would hit). A recursive Material/ also subsumes Material/Student_Summaries
+ * (student_summary's write dir), so that type needs no separate entry. The drift
+ * guard in tests/content-types.test.ts is recursion-aware via this list.
+ */
+export const RECURSIVE_SEARCH_DIRS: string[] = ['Material'];
 
 // Directory name → canonical type (fallback when no YAML frontmatter)
 const DIR_TYPE_MAP: Record<string, string> = {
@@ -172,6 +181,11 @@ const DIR_TYPE_MAP: Record<string, string> = {
   'Reflections/Bryggor': 'bridge_intention',
   'Reflections/Term': 'term_reflection',
   'Student_Materials': 'material',
+  // 3c: Material tree. The walk-up resolver picks the most specific match, so a
+  // frontmatter-less file under Material/Student_Summaries resolves to
+  // student_summary, while anything else under Material resolves to material.
+  'Material': 'material',
+  'Material/Student_Summaries': 'student_summary',
   // Workspace-root dirs (Profession/*) — derived from the shared registry.
   ...Object.fromEntries(workspaceRootDirectoryEntries().map((e) => [e.directory, e.type])),
 };
@@ -313,129 +327,165 @@ export async function findContext(input: unknown): Promise<FindContextOutput> {
     }
   }
 
-  // Scan all directories in parallel
-  const scanDir = async (dir: string): Promise<ContextResult[]> => {
-    const dirPath = path.join(workspace, dir);
-    const dirResults: ContextResult[] = [];
+  // Resolve a file's directory to a canonical type via DIR_TYPE_MAP, trying the
+  // most specific path first and walking up to parents — so a frontmatter-less
+  // file under Material/Student_Summaries resolves to student_summary, while
+  // anything else under Material resolves to material.
+  const resolveDirType = (relDir: string): string | undefined => {
+    let d = relDir;
+    for (;;) {
+      const t = DIR_TYPE_MAP[d];
+      if (t) return t;
+      const idx = d.lastIndexOf('/');
+      if (idx === -1) return undefined;
+      d = d.slice(0, idx);
+    }
+  };
 
-    let entries: string[];
+  // Turn one .md file into a ContextResult, or null if it doesn't match the
+  // requested types/filters. relDir is the file's workspace-relative directory.
+  const processFile = async (filePath: string, relDir: string): Promise<ContextResult | null> => {
+    const entry = path.basename(filePath);
+
+    let stat;
     try {
-      entries = await fs.readdir(dirPath);
+      stat = await fs.lstat(filePath);
+      if (stat.isSymbolicLink()) return null; // defence-in-depth: skip symlinks
+      if (!stat.isFile()) return null;
     } catch {
-      return []; // Directory doesn't exist — skip
+      return null;
     }
 
-    for (const entry of entries) {
-      if (!entry.endsWith('.md')) continue;
+    let content: string;
+    try {
+      const buf = Buffer.alloc(2048);
+      const fd = await fs.open(filePath, 'r');
+      await fd.read(buf, 0, 2048, 0);
+      await fd.close();
+      content = buf.toString('utf-8');
+    } catch {
+      return null;
+    }
 
-      const filePath = path.join(dirPath, entry);
+    const fm = parseYamlFrontmatter(content);
+    const fileType = String(fm.type || '');
 
-      let stat;
-      try {
-        stat = await fs.lstat(filePath);
-        if (stat.isSymbolicLink()) continue; // defence-in-depth: skip symlinks
-        if (!stat.isFile()) continue;
-      } catch {
-        continue;
-      }
+    let matchedType = '';
+    let matchSource: 'frontmatter' | 'directory' | 'filename' = 'frontmatter';
 
-      let content: string;
-      try {
-        const buf = Buffer.alloc(2048);
-        const fd = await fs.open(filePath, 'r');
-        await fd.read(buf, 0, 2048, 0);
-        await fd.close();
-        content = buf.toString('utf-8');
-      } catch {
-        continue;
-      }
-
-      const fm = parseYamlFrontmatter(content);
-      const fileType = String(fm.type || '');
-
-      let matchedType = '';
-      let matchSource: 'frontmatter' | 'directory' | 'filename' = 'frontmatter';
-
-      if (fileType && typeStringsToMatch.has(fileType)) {
-        matchedType = fileType;
+    if (fileType && typeStringsToMatch.has(fileType)) {
+      matchedType = fileType;
+    } else {
+      const dirType = resolveDirType(relDir);
+      if (dirType && content_types.includes(dirType)) {
+        matchedType = dirType;
+        matchSource = 'directory';
       } else {
-        const dirType = DIR_TYPE_MAP[dir];
-        if (dirType && content_types.includes(dirType as typeof content_types[number])) {
-          matchedType = dirType;
-          matchSource = 'directory';
-        } else {
-          for (const { pattern, type: fnType } of FILENAME_PATTERNS) {
-            if (pattern.test(entry) && content_types.includes(fnType as typeof content_types[number])) {
-              matchedType = fnType;
-              matchSource = 'filename';
-              break;
-            }
+        for (const { pattern, type: fnType } of FILENAME_PATTERNS) {
+          if (pattern.test(entry) && content_types.includes(fnType)) {
+            matchedType = fnType;
+            matchSource = 'filename';
+            break;
           }
         }
       }
-
-      if (!matchedType) continue;
-
-      if (topic) {
-        const topicLower = topic.toLowerCase();
-        if (!matchesTopic(fm, topic, content) && !entry.toLowerCase().includes(topicLower)) continue;
-      }
-
-      if (supports) {
-        if (!matchesSupports(fm, supports)) continue;
-      }
-
-      if (framework) {
-        const fmFramework = String(fm.framework || '');
-        if (fmFramework.toLowerCase() !== framework.toLowerCase()) continue;
-      }
-
-      // since: ISO date filter — only exclude files where the date field
-      // exists AND is strictly before `since`. Undated files pass through
-      // (do not exclude on missing data). js-yaml parses unquoted dates as
-      // Date objects, so normalise both Date and string forms to YYYY-MM-DD.
-      if (since) {
-        const rawDate = fm.date ?? fm.datum ?? fm.created;
-        let fileDate = '';
-        if (rawDate instanceof Date) {
-          fileDate = rawDate.toISOString().slice(0, 10);
-        } else if (rawDate != null && rawDate !== '') {
-          fileDate = String(rawDate);
-        }
-        if (fileDate && fileDate < since) continue;
-      }
-
-      const canonical = canonicalMap.get(matchedType) || matchedType;
-
-      dirResults.push({
-        path: filePath,
-        content_type: matchedType,
-        canonical_type: canonical,
-        match_source: matchSource,
-        date: String(fm.date || fm.datum || fm.created || ''),
-        title: String(fm.title || fm.topic || fm.uppdrag || entry),
-        size: stat.size,
-        supports: extractStringArray(fm.supports),
-        learning_objectives: extractStringArray(
-          Array.isArray(fm.learning_objectives)
-            ? fm.learning_objectives.map((lo: unknown) =>
-                lo && typeof lo === 'object' && 'code' in lo
-                  ? String((lo as Record<string, unknown>).code)
-                  : String(lo)
-              )
-            : undefined
-        ),
-        based_on: extractStringArray(fm.based_on),
-        framework: fm.framework ? String(fm.framework) : undefined,
-        status: fm.status ? String(fm.status) : undefined,
-      });
     }
 
-    return dirResults;
+    if (!matchedType) return null;
+
+    if (topic) {
+      const topicLower = topic.toLowerCase();
+      if (!matchesTopic(fm, topic, content) && !entry.toLowerCase().includes(topicLower)) return null;
+    }
+
+    if (supports) {
+      if (!matchesSupports(fm, supports)) return null;
+    }
+
+    if (framework) {
+      const fmFramework = String(fm.framework || '');
+      if (fmFramework.toLowerCase() !== framework.toLowerCase()) return null;
+    }
+
+    // since: ISO date filter — only exclude files where the date field
+    // exists AND is strictly before `since`. Undated files pass through
+    // (do not exclude on missing data). js-yaml parses unquoted dates as
+    // Date objects, so normalise both Date and string forms to YYYY-MM-DD.
+    if (since) {
+      const rawDate = fm.date ?? fm.datum ?? fm.created;
+      let fileDate = '';
+      if (rawDate instanceof Date) {
+        fileDate = rawDate.toISOString().slice(0, 10);
+      } else if (rawDate != null && rawDate !== '') {
+        fileDate = String(rawDate);
+      }
+      if (fileDate && fileDate < since) return null;
+    }
+
+    const canonical = canonicalMap.get(matchedType) || matchedType;
+
+    return {
+      path: filePath,
+      content_type: matchedType,
+      canonical_type: canonical,
+      match_source: matchSource,
+      date: String(fm.date || fm.datum || fm.created || ''),
+      title: String(fm.title || fm.topic || fm.uppdrag || entry),
+      size: stat.size,
+      supports: extractStringArray(fm.supports),
+      learning_objectives: extractStringArray(
+        Array.isArray(fm.learning_objectives)
+          ? fm.learning_objectives.map((lo: unknown) =>
+              lo && typeof lo === 'object' && 'code' in lo
+                ? String((lo as Record<string, unknown>).code)
+                : String(lo)
+            )
+          : undefined
+      ),
+      based_on: extractStringArray(fm.based_on),
+      framework: fm.framework ? String(fm.framework) : undefined,
+      status: fm.status ? String(fm.status) : undefined,
+    };
   };
 
-  const nestedResults = await Promise.all(SEARCH_DIRS.map(scanDir));
-  const results = nestedResults.flat();
+  // Collect .md files under a search dir. Recursive roots (RECURSIVE_SEARCH_DIRS)
+  // walk the whole subtree; every other dir is scanned flat (top level only).
+  // Each file is paired with its workspace-relative directory for the fallback.
+  const recursiveRoots = new Set(RECURSIVE_SEARCH_DIRS);
+  const collectFiles = async (searchDir: string): Promise<Array<{ filePath: string; relDir: string }>> => {
+    const recursive = recursiveRoots.has(searchDir);
+    const out: Array<{ filePath: string; relDir: string }> = [];
+
+    const walk = async (relDir: string): Promise<void> => {
+      let entries: Dirent[];
+      try {
+        entries = await fs.readdir(path.join(workspace, relDir), { withFileTypes: true });
+      } catch {
+        return; // Directory doesn't exist — skip
+      }
+      for (const e of entries) {
+        if (e.isSymbolicLink()) continue; // defence-in-depth: never follow symlinks
+        if (e.isDirectory()) {
+          if (recursive) await walk(`${relDir}/${e.name}`);
+        } else if (e.isFile() && e.name.endsWith('.md')) {
+          out.push({ filePath: path.join(workspace, relDir, e.name), relDir });
+        }
+      }
+    };
+
+    await walk(searchDir);
+    return out;
+  };
+
+  // Gather candidate files across all search dirs. Search dirs — including
+  // recursive roots — are non-overlapping, so every file is reached at most
+  // once and no dedupe is needed. Invariant: a RECURSIVE_SEARCH_DIRS root must
+  // not be (or sit under) another SEARCH_DIRS entry, or its subtree would be
+  // scanned twice.
+  const collected = (await Promise.all(SEARCH_DIRS.map(collectFiles))).flat();
+
+  const processed = await Promise.all(collected.map((f) => processFile(f.filePath, f.relDir)));
+  const results = processed.filter((r): r is ContextResult => r !== null);
 
   // Sort by date descending
   results.sort((a, b) => b.date.localeCompare(a.date));
