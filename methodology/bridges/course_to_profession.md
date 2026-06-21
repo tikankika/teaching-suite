@@ -49,7 +49,7 @@ Espoused vs in-use-flaggor    ─┘
         ↓
 6. Presentera för läraren: "Detta gap finns i 3 av 4 kurser denna termin. Vill du revidera manifestet?"
         ↓
-7. Om bekräftat → load_methodology('manifest_revision') → fortsätt där
+7. Om bekräftat → load_methodology('manifest') → fortsätt där
 ```
 
 **Princip:** Manifest-revision är kostsam — bryggan ska bara aktivera när mönstret är *robust* (≥2 kurser, persisterar över ≥2 terminer för att räknas som hög konfidens).

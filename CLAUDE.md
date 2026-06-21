@@ -35,7 +35,7 @@ teaching-suite/
 │   │   │
 │   │   ├── mechanical/             # Mechanical Tools (7 tools)
 │   │   │   ├── load-methodology.ts       # Load methodology docs
-│   │   │   ├── find-context.ts           # Search workspace for files
+│   │   │   ├── find-context.ts           # Search workspace for files (types derived from registry; Material/ recursive)
 │   │   │   ├── context-load.ts           # Load _config/ at session start
 │   │   │   ├── parse-conversation.ts     # Parse email/transcripts
 │   │   │   ├── parse-lesson-transcript.ts # Parse pyannote transcripts
@@ -53,6 +53,7 @@ teaching-suite/
 │   │
 │   └── utils/
 │       ├── content-scanner.ts      # Advisory Swedish keyword matcher (privacy/exam terms)
+│       ├── content-types.ts        # Single source of truth: content type → directory (write routing + find_context search set)
 │       ├── file-helpers.ts
 │       ├── process-log.ts
 │       ├── text-helpers.ts
@@ -111,7 +112,7 @@ All core tools enforce **workspace validation** via `--workspace` flag.
 | Tool | Purpose |
 |------|---------|
 | `load_methodology` | Load methodology docs for teaching-cycle or course-design processes |
-| `find_context` | Search workspace for existing files by content type |
+| `find_context` | Search workspace for existing files by content type — the searchable types are derived from the shared content-type registry (every type `intelligent_save` can write is searchable), and `Material/` is scanned recursively |
 | `context_load` | Load `_config/` (CLAUDE.md, course context, sources) at session start |
 | `parse_conversation` | Parse email/meeting transcripts into structured messages |
 | `parse_lesson_transcript` | Parse pyannote-formatted transcripts into structured segments |
@@ -279,4 +280,4 @@ When to use session capture tools:
 
 ---
 
-*Last updated: 2026-05-27*
+*Last updated: 2026-06-21*

@@ -455,6 +455,76 @@ describe('find_context — v3 cycle outputs', () => {
 });
 
 // ============================================================================
+// 3c: MATERIAL/ RECURSIVE + student_summary
+// ============================================================================
+
+describe('find_context — Material/ recursive (3c)', () => {
+  it('finds material nested in hand-sorted Material subfolders by frontmatter', async () => {
+    await createMdFile('Material/Klart/Övningar/lab-fotosyntes.md', {
+      type: 'material',
+      title: 'Labb fotosyntes',
+    });
+
+    const result = await findContext({
+      workspace: workspaceDir,
+      content_types: ['material'],
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.results.length).toBe(1);
+    expect(result.results[0].canonical_type).toBe('material');
+    expect(result.results[0].match_source).toBe('frontmatter');
+  });
+
+  it('directory fallback: nested Material .md without frontmatter → material', async () => {
+    await createMdFile('Material/Klart/Presentationer/intro.md', {}, '# Intro (ingen frontmatter)');
+
+    const result = await findContext({
+      workspace: workspaceDir,
+      content_types: ['material'],
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.results.length).toBe(1);
+    expect(result.results[0].match_source).toBe('directory');
+    expect(result.results[0].canonical_type).toBe('material');
+  });
+
+  it('finds student_summary in Material/Student_Summaries/ by frontmatter', async () => {
+    await createMdFile('Material/Student_Summaries/grupp-a.md', {
+      type: 'student_summary',
+      title: 'Grupp A sammanfattning',
+    });
+
+    const result = await findContext({
+      workspace: workspaceDir,
+      content_types: ['student_summary'],
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.results.length).toBe(1);
+    expect(result.results[0].canonical_type).toBe('student_summary');
+    expect(result.results[0].match_source).toBe('frontmatter');
+  });
+
+  it('directory fallback: Material/Student_Summaries .md without frontmatter → student_summary', async () => {
+    // The deeper subtree resolves to the most specific DIR_TYPE_MAP entry,
+    // so a frontmatter-less file here is student_summary, not material.
+    await createMdFile('Material/Student_Summaries/no-fm.md', {}, '# utan frontmatter');
+
+    const result = await findContext({
+      workspace: workspaceDir,
+      content_types: ['student_summary'],
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.results.length).toBe(1);
+    expect(result.results[0].match_source).toBe('directory');
+    expect(result.results[0].canonical_type).toBe('student_summary');
+  });
+});
+
+// ============================================================================
 // BRIDGE METHODOLOGY FILTER: since (PR-δ-a-2)
 // ============================================================================
 

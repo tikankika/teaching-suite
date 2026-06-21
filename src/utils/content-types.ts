@@ -91,3 +91,13 @@ export function workspaceRootDirectoryEntries(): Array<{ type: string; directory
 export function workspaceRootDirectories(): string[] {
   return workspaceRootDirectoryEntries().map((e) => e.directory);
 }
+
+/**
+ * Every content type name in the registry, in declaration order. find_context
+ * derives its searchable `content_types` enum from this so the search side can
+ * never drift behind the write side (the 27/20 divergence 3c closes). Guarded
+ * by the registry-equality test in tests/content-types.test.ts.
+ */
+export function contentTypeNames(): string[] {
+  return Object.keys(CONTENT_TYPE_DIRECTORIES);
+}
