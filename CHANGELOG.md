@@ -8,7 +8,7 @@ All notable changes to Teaching Suite are documented here. The format follows
 
 ### Added
 
-- **Process-name guard (CI test).** `tests/process-name-guard.test.ts` asserts a one-directional contract — every `load_methodology` process name referenced in the public docs (`README.md`, `docs/TEACHER_GUIDE.md`, `methodology/bridges/*.md`) exists in the tool's `z.enum`. It reads two structured sources (the `load_methodology(...)` calls and the methodology table's `Process` column) so a renamed or removed process can no longer leave a published doc pointing teachers at a process the tool rejects. Same family as `tests/content-types.test.ts`; no runtime change to `load_methodology`.
+- **Process-name guard (CI test).** `tests/process-name-guard.test.ts` asserts a one-directional contract — every `load_methodology` process name referenced in the public docs (`README.md`, `docs/TEACHER_GUIDE.md`, and the whole `methodology/` tree) exists in the tool's `z.enum`. It reads two structured sources (the `load_methodology(...)` calls and the methodology table's `Process` column) so a renamed or removed process can no longer leave a published doc pointing teachers at a process the tool rejects. Same family as `tests/content-types.test.ts`; no runtime change to `load_methodology`.
 - **README — "Part of a teaching-and-assessment ecosystem" section.** A shared cross-suite block (edusafe-pipeline, Teaching Suite, QuestionForge, Assessment Suite) describing the deliberate data boundary and how the tools fit over one teaching cycle. Mirrored verbatim across the three suite READMEs; sibling repositories are named without links until they are public.
 
 ### Changed

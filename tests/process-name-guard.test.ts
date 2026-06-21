@@ -25,16 +25,30 @@ import { LoadMethodologyInputSchema } from '../src/tools/mechanical/load-methodo
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 
-// The reader set: public docs that send a teacher to a process by name.
-// bridges/*.md is globbed so a new bridge is scanned automatically.
-const BRIDGES_DIR = path.join(REPO_ROOT, 'methodology', 'bridges');
+/** Recursively collect repo-relative paths of every .md file under a directory. */
+function collectMarkdown(absDir: string): string[] {
+  const out: string[] = [];
+  for (const entry of fs.readdirSync(absDir, { withFileTypes: true })) {
+    const abs = path.join(absDir, entry.name);
+    if (entry.isDirectory()) out.push(...collectMarkdown(abs));
+    else if (entry.name.endsWith('.md')) out.push(path.relative(REPO_ROOT, abs));
+  }
+  return out;
+}
+
+// The reader set: the public docs that send a teacher to a process by name.
+// Per the SHAPE §4 amendment (2026-06-21), this is the two root docs plus the
+// WHOLE methodology/ tree — not just bridges/. The cycle docs (lesson/, course/,
+// profession/) and synlighetsprincip.md also carry load_methodology('...') calls
+// with the drift-prone bridge/cycle names, so a hand-held file list was itself a
+// vocabulary that could drift. Globbing methodology/ closes that meta-hole
+// structurally; extractCallNames matches only the load_methodology(...) shape, so
+// widening the file set adds no false positives. Scoped to methodology/ (+ the two
+// root docs) so test fixtures and node_modules are never pulled in.
 const READER_SET: string[] = [
   'README.md',
   'docs/TEACHER_GUIDE.md',
-  ...fs
-    .readdirSync(BRIDGES_DIR)
-    .filter((f) => f.endsWith('.md'))
-    .map((f) => path.join('methodology', 'bridges', f)),
+  ...collectMarkdown(path.join(REPO_ROOT, 'methodology')),
 ];
 
 const ENUM = new Set(LoadMethodologyInputSchema.shape.process.options as string[]);
