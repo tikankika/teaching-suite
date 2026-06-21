@@ -35,7 +35,7 @@ Specifikt: när läraren ställer Klafkis 5 frågor (Exemplarische Bedeutung, Ge
 ## Mekanism — vad gör Cowork
 
 ```
-1. Lärare initierar pre_lesson → load_methodology('pre_lesson')
+1. Lärare initierar pre_lesson → load_methodology('pre_lesson_planning')
         ↓
 2. Pre_lesson Fas 1 (Klafki didaktisk analys) når slutet
         ↓
