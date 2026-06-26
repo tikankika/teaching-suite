@@ -1,12 +1,32 @@
 # Teaching Suite
 
+[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](CHANGELOG.md)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-lightgrey.svg)](LICENSE)
+[![Node.js 18+](https://img.shields.io/badge/node.js-18+-green.svg)](https://nodejs.org/)
+
 > MCP server that scaffolds guided processes for teachers. Capture ideas, plan lessons, reflect on teaching.
 
 **Philosophy:** Process scaffolding, not automation. The teacher thinks, MCP structures.
 
-## Development Status
+## What is Teaching Suite?
 
-> **This is an active development project.** The tool architecture is stable and tested (642 tests across 24 MCP tools). The core reflection cycle — plan → teach → reflect → improve — works end-to-end, with data flowing between three independent MCP servers via the filesystem.
+Teaching runs in cycles — you plan a lesson, teach it, reflect on what happened, and
+carry that forward into the next one. The thinking that makes those cycles worthwhile
+is the easiest thing to lose: ideas half-noted and forgotten, reflections never written
+down, each course planned from scratch.
+
+Teaching Suite helps you hold onto it. Working through Claude Desktop, it guides you as
+you plan a lesson, capture an idea the moment it arrives, or reflect after teaching — and
+saves each as a plain Markdown file in your own folder. The pedagogy lives in editable
+methodology documents, not in the code; the tools only structure the conversation and
+write the result down. You do the thinking; the tool gives the process a shape.
+
+By design it holds **no student personal data** — it works with your teaching (plans,
+ideas, reflections), not your students' work.
+
+## Development status
+
+> **This is an active development project.** The tool architecture is stable and well-tested across 24 MCP tools. The core reflection cycle — plan → teach → reflect → improve — works end-to-end, with data flowing between three independent MCP servers via the filesystem.
 >
 > **Methodology (draft):** Three nested cycles — *lesson*, *course*, *profession* — drawing on Klafki's didactical analysis, Wiggins & McTighe's Understanding by Design, Schön's reflective practice, Black & Wiliam's formative assessment, and Biesta's pedagogy of subjectification. The frameworks are named but not yet worked through to the theoretical depth a 1.0 would need; `methodology/tensions.md` records the tensions between them. Published at this early stage deliberately — to invite critique.
 >
@@ -84,6 +104,33 @@ All tools are licensed under PolyForm Noncommercial 1.0.0.
 > [Assessment Suite](https://github.com/tikankika/assessment-suite) and
 > [QuestionForge](https://github.com/tikankika/question-forge).
 
+## Who is this for?
+
+Teaching Suite serves three audiences. Pick the door that fits — each needs something different.
+
+### I'm a teacher
+
+You plan lessons, capture ideas as they arrive, and reflect across the lesson, course, and profession cycles — and everything is saved as plain Markdown in your own folder. You work through Claude Desktop; the methodology guides the conversation and the tools write the result down.
+
+If you are not the person who installs software, hand the developer door below to a colleague, then start here:
+
+- [docs/TEACHER_GUIDE.md](docs/TEACHER_GUIDE.md) — how to work with Teaching Suite as a teacher
+
+### I'm a researcher (pedagogy, teacher reflection, AI in education)
+
+The interesting part is the **methodology**, not the plumbing — three nested cycles (lesson, course, profession) drawing on Klafki, Wiggins & McTighe, Schön, Black & Wiliam and Biesta, published as a working draft to invite critique.
+
+- [methodology/](methodology/) — the pedagogical framework (start with `methodology/README.md`)
+- [docs/decisions/](docs/decisions/) — architecture decision records
+- The **Development status** above is explicit about where each part is mature and where it is still being built.
+
+### I'm a developer (or setting this up for a teacher)
+
+Clone, build, and point it at a folder. It is an MCP server (Node.js) that runs inside Claude Desktop.
+
+- [Quick start](#quick-start) — install, build, test, and the Claude Desktop configuration
+- [CLAUDE.md](CLAUDE.md) — architecture and the full tool reference
+
 ## Features
 
 - **24 MCP tools** for teacher workflows
@@ -92,7 +139,7 @@ All tools are licensed under PolyForm Noncommercial 1.0.0.
 - **YAML frontmatter** for structured data
 - **Workspace security**: `--workspace` flag locks all file operations to a directory
 
-## Quick Start
+## Quick start
 
 ```bash
 # Install
@@ -102,10 +149,10 @@ npm install
 npm run build
 
 # Test
-npm test  # 642 tests
+npm test  # run the full test suite
 ```
 
-### Claude Desktop Configuration
+### Claude Desktop configuration
 
 Add to `claude_desktop_config.json`:
 
@@ -132,9 +179,9 @@ Teaching Suite spans three surfaces over a single folder of plain Markdown files
 
 In short: **Claude Desktop writes, the folder stores, Obsidian reads** — one folder, three views. Sync the folder (e.g. via Nextcloud) and the same files follow you across machines.
 
-## Tools Overview
+## Tools overview
 
-### Core Tools (4)
+### Core tools (4)
 
 | Tool | Purpose |
 |------|---------|
@@ -143,7 +190,7 @@ In short: **Claude Desktop writes, the folder stores, Obsidian reads** — one f
 | `file_edit` | Edit existing files |
 | `file_search` | Search text across files |
 
-### Composite Tools (6)
+### Composite tools (6)
 
 | Tool | Purpose |
 |------|---------|
@@ -154,7 +201,7 @@ In short: **Claude Desktop writes, the folder stores, Obsidian reads** — one f
 | `quick_save_session` | Full workflow: capture → format → save |
 | `log_process_event` | Append a structured event to the course process log |
 
-### Mechanical Tools (7)
+### Mechanical tools (7)
 
 | Tool | Purpose |
 |------|---------|
@@ -166,14 +213,14 @@ In short: **Claude Desktop writes, the folder stores, Obsidian reads** — one f
 | `parse_lesson_plan_yaml` | Parse a lesson plan's YAML frontmatter and body |
 | `aggregate_logs` | Unified chronological timeline across Teaching Suite, QuestionForge, Assessment Suite |
 
-### Setup Tools (2)
+### Setup tools (2)
 
 | Tool | Purpose |
 |------|---------|
 | `project_init` | Initialise a course: folder structure, methodology docs, project state |
 | `init_profession` | Initialise workspace-level `Profession/Manifest/` (sibling to course folders) |
 
-### Source Management (5)
+### Source management (5)
 
 | Tool | Purpose |
 |------|---------|
@@ -183,7 +230,7 @@ In short: **Claude Desktop writes, the folder stores, Obsidian reads** — one f
 | `source_remove` | Remove source |
 | `source_update_usage` | Track source usage |
 
-## Example: Capture an Idea
+## Example: capture an idea
 
 ```
 User: "Idé: Använd solpaneler som analogi för fotosyntes"
@@ -198,7 +245,7 @@ User: "Idé: Använd solpaneler som analogi för fotosyntes"
   - status: BACKLOG
 ```
 
-## Example: Methodology-Driven Lesson Planning
+## Example: methodology-driven lesson planning
 
 ```
 1. load_methodology(process: "pre_lesson_planning")
@@ -214,7 +261,7 @@ User: "Idé: Använd solpaneler som analogi för fotosyntes"
    → Saves structured lesson plan with YAML frontmatter
 ```
 
-## Data Privacy
+## Data privacy
 
 Teaching Suite includes a lightweight **content scanner** that warns (it never blocks) when a file contains any of a fixed list of Swedish sensitivity keywords (e.g. *personnummer*, *elevhälsa*). It is an advisory reminder — **not anonymisation or reliable PII detection**: it matches keywords, not actual personal-number patterns or names. Anonymise sensitive data before importing it.
 
@@ -234,9 +281,14 @@ The real privacy guarantees are the `--workspace` lockdown and the absence of ne
 - Node.js 18+
 - npm
 
-## License
+## Licence
 
 [PolyForm Noncommercial 1.0.0](LICENSE) — free for noncommercial use (including education and research); commercial use requires a separate licence. See [ADR-008](docs/decisions/ADR-008-license-polyform-noncommercial.md).
+
+## Support
+
+- Questions and bugs: [GitHub Issues](https://github.com/tikankika/teaching-suite/issues)
+- Discussion: [GitHub Discussions](https://github.com/tikankika/teaching-suite/discussions)
 
 ---
 
