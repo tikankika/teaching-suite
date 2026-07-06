@@ -21,7 +21,7 @@ Please include:
 
 You can expect an acknowledgement within a week, and responsible disclosure is appreciated — please allow time for a fix before any public disclosure.
 
-## Security Considerations
+## Security considerations
 
 Teaching Suite is an MCP server that operates on the local filesystem. Key security measures:
 
@@ -30,7 +30,7 @@ Teaching Suite is an MCP server that operates on the local filesystem. Key secur
 - **No network exposure**: Runs locally via stdio, not as a network service
 - **Input validation**: All inputs validated with Zod schemas
 
-### Educational Data Privacy
+### Educational data privacy
 
 Teaching Suite handles educational content that may contain sensitive data:
 
@@ -45,4 +45,4 @@ We use Dependabot to monitor dependencies for known vulnerabilities.
 Current dependencies:
 - `@modelcontextprotocol/sdk` - MCP protocol
 - `zod` - Input validation
-- `js-yaml` - YAML parsing (v4.x with safe defaults)
+- `js-yaml` - YAML parsing (safe by default since v4)
