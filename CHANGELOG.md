@@ -10,6 +10,9 @@ All notable changes to Teaching Suite are documented here. The format follows
 
 - **Process-name guard (CI test).** `tests/process-name-guard.test.ts` asserts a one-directional contract — every `load_methodology` process name referenced in the public docs (`README.md`, `docs/TEACHER_GUIDE.md`, and the whole `methodology/` tree) exists in the tool's `z.enum`. It reads two structured sources (the `load_methodology(...)` calls and the methodology table's `Process` column) so a renamed or removed process can no longer leave a published doc pointing teachers at a process the tool rejects. Same family as `tests/content-types.test.ts`; no runtime change to `load_methodology`.
 - **README — "Part of a teaching-and-assessment ecosystem" section.** A shared cross-suite block (edusafe-pipeline, Teaching Suite, QuestionForge, Assessment Suite) describing the deliberate data boundary and how the tools fit over one teaching cycle. Mirrored verbatim across the three suite READMEs; sibling repositories are named without links until they are public.
+- **README — a plain-language "What is Teaching Suite?" opening** so a newcomer grasps the tool within the first lines, before the architecture and jargon.
+- **README — a "Who is this for?" section** with three audience doors (teacher / researcher / developer), each routed to its starting point.
+- **README — status, licence and Node badges, and a Support section** (Issues and Discussions).
 
 ### Changed
 
@@ -18,6 +21,9 @@ All notable changes to Teaching Suite are documented here. The format follows
 - **README — methodology framed honestly as a draft.** Dropped the "v3.0 (current)" label; the named frameworks (Klafki, Wiggins & McTighe, Schön, Black & Wiliam, Biesta) are now described as named but not yet worked through to the depth a 1.0 would need, with the methodology published deliberately to invite critique. The product version (0.5.0) is the single readiness signal (#8).
 - **README — added a "Workflow: how the pieces fit" section** explaining the three surfaces over one folder of Markdown: local files (source of truth), Claude Desktop (engine), Obsidian (reading lens). Replaced the thin "Integration" list (#8).
 - **README — added a "Methodology readiness" table** giving per-area maturity (Stable / Working draft / Early draft) across the lesson, course and profession cycles, foundations, reflection frameworks, system conventions, bridges and tensions; grounded in each document's `status:` front matter. The same readiness markers were mirrored into `methodology/README.md`'s related-documents list (#8).
+- **README — headings set to sentence case** to match the family house style; the hard-coded test count was de-numbered (it had drifted from the suite) and the licence heading corrected to British spelling.
+- **CONTRIBUTING — sentence-case headings and a standardised licence line.**
+- **SECURITY — vulnerability reporting standardised** to GitHub's private vulnerability reporting (the alternative "email the maintainer" removed), with a unified supported-versions table and a response-time expectation.
 
 ### Documentation
 
