@@ -32,8 +32,8 @@ authorship in git history, licence text, dependency lists, and similar.
 - **Lesson, reflection and transcript content** is written to be realistic but is
   entirely invented; it describes no real classroom event.
 
-These conventions follow the repository's
-[`.claude/rules/data-protection.md`](.claude/rules/data-protection.md) rule.
+These conventions follow the data-protection rules in
+[CONTRIBUTING.md](CONTRIBUTING.md#critical-rules--data-protection).
 
 ## The one example — and no more
 
@@ -60,8 +60,7 @@ course-specific material belongs in a teacher's own workspace, never here.
   course — and keep the placeholder conventions above (`KURS101`, `School A`,
   `/path/to/...`).
 - Never commit anything synced from Nextcloud, Dropbox, OneDrive or another
-  external store — see
-  [`.claude/rules/internal-docs-boundary.md`](.claude/rules/internal-docs-boundary.md).
+  external store — that material belongs to a private workspace, not the repo.
 
 If you are ever unsure whether a piece of sample data is safe to commit, treat it
 as real and leave it out.
