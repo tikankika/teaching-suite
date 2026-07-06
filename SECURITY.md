@@ -1,26 +1,27 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.5.x   | :white_check_mark: |
-| < 0.5   | :x:                |
+| Version | Supported |
+|---------|-----------|
+| 0.5.x   | ✅ |
+| < 0.5   | ❌ |
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-If you discover a security vulnerability in Teaching Suite, please report it responsibly:
+Please **do not** open a public issue for security problems.
 
-1. **Do NOT** open a public GitHub issue
-2. Email the maintainer or use GitHub's private vulnerability reporting feature
-3. Include:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
+Report vulnerabilities privately through GitHub's [private vulnerability reporting](https://github.com/tikankika/teaching-suite/security/advisories/new) (the **Security** tab → **Report a vulnerability**).
 
-We will respond within 7 days and work with you to understand and address the issue.
+Please include:
 
-## Security Considerations
+- a description of the issue and its impact,
+- steps to reproduce (a minimal example if possible),
+- any suggested mitigation.
+
+You can expect an acknowledgement within a week, and responsible disclosure is appreciated — please allow time for a fix before any public disclosure.
+
+## Security considerations
 
 Teaching Suite is an MCP server that operates on the local filesystem. Key security measures:
 
@@ -29,7 +30,7 @@ Teaching Suite is an MCP server that operates on the local filesystem. Key secur
 - **No network exposure**: Runs locally via stdio, not as a network service
 - **Input validation**: All inputs validated with Zod schemas
 
-### Educational Data Privacy
+### Educational data privacy
 
 Teaching Suite handles educational content that may contain sensitive data:
 
@@ -44,4 +45,4 @@ We use Dependabot to monitor dependencies for known vulnerabilities.
 Current dependencies:
 - `@modelcontextprotocol/sdk` - MCP protocol
 - `zod` - Input validation
-- `js-yaml` - YAML parsing (v4.x with safe defaults)
+- `js-yaml` - YAML parsing (safe by default since v4)
