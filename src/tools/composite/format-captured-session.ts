@@ -86,7 +86,7 @@ function generateFrontmatter(metadata: SessionMetadata): string {
 
   const yamlStr = yaml.dump(frontmatterObj, {
     lineWidth: -1,
-    quotingType: '"',
+    quoteStyle: 'double',
     forceQuotes: false,
   });
 
