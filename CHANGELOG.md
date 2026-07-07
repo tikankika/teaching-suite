@@ -4,10 +4,11 @@ All notable changes to Teaching Suite are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.6.0] - 2026-07-07
 
 ### Added
 
+- **EXAMPLES_POLICY.md.** A single documented answer to "are these examples real?" — no. All example, illustrative and test data in the repository is fabricated; the repository keeps one worked example (`examples/kurs101_reflektion/`) and no new examples are added (#23).
 - **Process-name guard (CI test).** `tests/process-name-guard.test.ts` asserts a one-directional contract — every `load_methodology` process name referenced in the public docs (`README.md`, `docs/TEACHER_GUIDE.md`, and the whole `methodology/` tree) exists in the tool's `z.enum`. It reads two structured sources (the `load_methodology(...)` calls and the methodology table's `Process` column) so a renamed or removed process can no longer leave a published doc pointing teachers at a process the tool rejects. Same family as `tests/content-types.test.ts`; no runtime change to `load_methodology`.
 - **README — "Part of a teaching-and-assessment ecosystem" section.** A shared cross-suite block (edusafe-pipeline, Teaching Suite, QuestionForge, Assessment Suite) describing the deliberate data boundary and how the tools fit over one teaching cycle. Mirrored verbatim across the three suite READMEs; sibling repositories are named without links until they are public.
 - **README — a plain-language "What is Teaching Suite?" opening** so a newcomer grasps the tool within the first lines, before the architecture and jargon.
@@ -16,6 +17,7 @@ All notable changes to Teaching Suite are documented here. The format follows
 
 ### Changed
 
+- **js-yaml upgraded 4.2.0 → 5.2.1 (major).** The only code change required was the renamed dump option (`quotingType` → `quoteStyle`) in `format_captured_session`; output is unchanged. All `yaml.load` call sites were verified against v5's stricter behaviour (throws on empty input — every site is guarded), and YAML dates continue to load as strings under both `JSON_SCHEMA` and the new `CORE_SCHEMA` default (#25).
 - **`find_context` searches every content type `intelligent_save` can write (3c).** The search-side `content_types` enum is now derived from the shared content-type registry (`src/utils/content-types.ts`) instead of a separate hand-maintained list, so the seven types that could be saved but never searched by name — `deep_analysis`, `material`, `lesson_summary`, `student_summary`, `content`, `recap`, `auto_log` — are now searchable. This is an additive public schema change (`find_context` input grows by 7 types). The drift guard in `tests/content-types.test.ts` now asserts the search enum equals the registry, so the 27/20 divergence cannot silently return. (The deferred consolidation of default-status, validation rules and event mapping into registry columns is intentionally **not** in this batch — they are internal to `intelligent_save` with no drifting reader.)
 - **`find_context` scans `Material/` recursively.** Material is the teacher's hand-sorted tree (`Material/Klart`, `Material/Övningar`, …); a flat scan hid everything below the top level. A new `RECURSIVE_SEARCH_DIRS` marks Material for whole-subtree scanning, which also subsumes `Material/Student_Summaries/` (`student_summary`'s write dir). Directory-based type fallback now resolves most-specific-first, so a frontmatter-less file under `Material/Student_Summaries` is typed `student_summary` and anything else under `Material` is typed `material`. Only `.md` files are read (first 2 KB), and symlinks are never followed.
 - **README — methodology framed honestly as a draft.** Dropped the "v3.0 (current)" label; the named frameworks (Klafki, Wiggins & McTighe, Schön, Black & Wiliam, Biesta) are now described as named but not yet worked through to the depth a 1.0 would need, with the methodology published deliberately to invite critique. The product version (0.5.0) is the single readiness signal (#8).

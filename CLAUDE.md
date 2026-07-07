@@ -6,7 +6,7 @@ Teaching Suite is an MCP (Model Context Protocol) server that scaffolds guided p
 
 **Philosophy:** Process scaffolding, not automation. The teacher thinks, MCP structures.
 
-**Version:** 0.5.0
+**Version:** 0.6.0
 
 ## Architecture
 
@@ -77,7 +77,7 @@ teaching-suite/
 ├── docs/
 │   └── decisions/                  # Architecture Decision Records (ADRs)
 │
-├── tests/                          # 642 tests (23 files)
+├── tests/                          # Test suite (Vitest)
 │
 ├── CLAUDE.md                       # This file
 └── package.json
@@ -232,7 +232,7 @@ All file operations require a `--workspace` flag at server startup:
 ```bash
 npm install    # Install dependencies
 npm run build  # Build TypeScript
-npm test       # Run tests (642 tests)
+npm test       # Run the full test suite
 npm start      # Start MCP server
 ```
 
@@ -280,4 +280,4 @@ When to use session capture tools:
 
 ---
 
-*Last updated: 2026-06-21*
+*Last updated: 2026-07-07*

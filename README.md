@@ -1,6 +1,6 @@
 # Teaching Suite
 
-[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](CHANGELOG.md)
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-lightgrey.svg)](LICENSE)
 [![Node.js 18+](https://img.shields.io/badge/node.js-18+-green.svg)](https://nodejs.org/)
 
@@ -292,4 +292,4 @@ The real privacy guarantees are the `--workspace` lockdown and the absence of ne
 
 ---
 
-*Version 0.5.0*
+*Version 0.6.0*
