@@ -23,6 +23,9 @@ Thumbs.db
 
 # Claude Code dev-support — local only, never published (B7 exclusion: .claude/ stays out of the public artifact)
 .claude/
+# Root agent-instruction file — dev-tooling, untracked per ACDM ADR-017; the public
+# architecture reference lives in docs/ARCHITECTURE.md
+/CLAUDE.md
 
 # Local MCP server config (contains absolute paths)
 .mcp.json

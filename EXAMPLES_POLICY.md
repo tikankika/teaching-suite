@@ -16,7 +16,7 @@ documented answer: **no**.
 This applies to all illustrative and sample content, including:
 
 - `examples/` — worked walkthroughs and the artefacts they produce
-- Code and tool examples in `README.md`, `CLAUDE.md`, and `docs/`
+- Code and tool examples in `README.md` and `docs/`
 - Illustrative snippets inside the methodology documents (`methodology/`)
 - Test fixtures and sample inputs under `tests/`
 

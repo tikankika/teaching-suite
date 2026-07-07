@@ -12,6 +12,7 @@ point-in-time records of significant design decisions and why they were made.
 | [ADR-005](ADR-005-parse-lesson-transcript-mode-parameter.md) | `parse_lesson_transcript` mode parameter |
 | [ADR-007](ADR-007-bilingual-language-policy.md) | Bilingual language policy |
 | [ADR-008](ADR-008-license-polyform-noncommercial.md) | Licence — PolyForm Noncommercial |
+| [ADR-009](ADR-009-claude-md-exclusion.md) | Root `CLAUDE.md` is dev-tooling — public reference in `docs/ARCHITECTURE.md` |
 
 (ADR-006 was never issued; the numbering gap is intentional.)
 

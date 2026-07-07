@@ -1,6 +1,4 @@
-# CLAUDE.md - Teaching Suite
-
-## Project Overview
+# Architecture
 
 Teaching Suite is an MCP (Model Context Protocol) server that scaffolds guided processes for teachers. It helps capture ideas, reflect on lessons, plan teaching, and track pedagogical goals.
 
@@ -8,7 +6,7 @@ Teaching Suite is an MCP (Model Context Protocol) server that scaffolds guided p
 
 **Version:** 0.6.0
 
-## Architecture
+## Repository layout
 
 ```
 teaching-suite/
@@ -16,7 +14,7 @@ teaching-suite/
 │   ├── index.ts                    # MCP server entry point
 │   │
 │   ├── tools/
-│   │   ├── core/                   # Core Tools (4 tools)
+│   │   ├── core/                   # Core tools (4 tools)
 │   │   │   ├── index.ts
 │   │   │   ├── workspace.ts        # Path validation, security
 │   │   │   ├── file-read.ts
@@ -24,7 +22,7 @@ teaching-suite/
 │   │   │   ├── file-edit.ts
 │   │   │   └── file-search.ts
 │   │   │
-│   │   ├── composite/              # Composite Tools (6 tools)
+│   │   ├── composite/              # Composite tools (6 tools)
 │   │   │   ├── index.ts
 │   │   │   ├── capture-idea.ts           # Quick idea capture
 │   │   │   ├── intelligent-save.ts       # Smart file saving
@@ -33,7 +31,7 @@ teaching-suite/
 │   │   │   ├── quick-save-session.ts
 │   │   │   └── log-process-event.ts      # Append event to course process log
 │   │   │
-│   │   ├── mechanical/             # Mechanical Tools (7 tools)
+│   │   ├── mechanical/             # Mechanical tools (7 tools)
 │   │   │   ├── load-methodology.ts       # Load methodology docs
 │   │   │   ├── find-context.ts           # Search workspace for files (types derived from registry; Material/ recursive)
 │   │   │   ├── context-load.ts           # Load _config/ at session start
@@ -42,11 +40,11 @@ teaching-suite/
 │   │   │   ├── parse-lesson-plan-yaml.ts # Parse lesson-plan YAML
 │   │   │   └── aggregate-logs.ts         # Cross-server chronological timeline
 │   │   │
-│   │   ├── setup/                  # Setup Tools (2 tools)
+│   │   ├── setup/                  # Setup tools (2 tools)
 │   │   │   ├── project-init.ts           # Initialise course structure
 │   │   │   └── init-profession.ts        # Initialise Profession/Manifest/
 │   │   │
-│   │   └── sources/                # Source Tools (5 tools)
+│   │   └── sources/                # Source tools (5 tools)
 │   │       ├── index.ts
 │   │       ├── scan.ts
 │   │       └── track.ts
@@ -61,7 +59,7 @@ teaching-suite/
 │
 ├── methodology/                    # Pedagogical guides (for Claude Desktop)
 │   ├── README.md                   # Top-level operative guide (v3)
-│   ├── pedagogisk_arkitektur.md  # Conceptual spine (v3)
+│   ├── pedagogisk_arkitektur.md    # Conceptual spine (v3)
 │   ├── synlighetsprincip.md        # Visibility principle (v3)
 │   ├── tensions.md                 # Pedagogical tensions (v3)
 │   ├── lesson/                     # Lesson cycle (v3): pre_lesson, post_lesson_auto, post_lesson_refl, bridge
@@ -79,13 +77,12 @@ teaching-suite/
 │
 ├── tests/                          # Test suite (Vitest)
 │
-├── CLAUDE.md                       # This file
 └── package.json
 ```
 
-## Tool Inventory (24 tools)
+## Tool inventory (24 tools)
 
-### Core Tools (4)
+### Core tools (4)
 
 | Tool | Purpose |
 |------|---------|
@@ -94,9 +91,9 @@ teaching-suite/
 | `file_edit` | Edit existing files (replace, insert, append, delete) |
 | `file_search` | Search text across files in workspace |
 
-All core tools enforce **workspace validation** via `--workspace` flag.
+All core tools enforce **workspace validation** via the `--workspace` flag.
 
-### Composite Tools (6)
+### Composite tools (6)
 
 | Tool | Purpose |
 |------|---------|
@@ -107,7 +104,7 @@ All core tools enforce **workspace validation** via `--workspace` flag.
 | `quick_save_session` | Full workflow: capture → format → save |
 | `log_process_event` | Append a structured event to the course process log |
 
-### Mechanical Tools (7)
+### Mechanical tools (7)
 
 | Tool | Purpose |
 |------|---------|
@@ -119,14 +116,14 @@ All core tools enforce **workspace validation** via `--workspace` flag.
 | `parse_lesson_plan_yaml` | Parse a lesson plan's YAML frontmatter and body |
 | `aggregate_logs` | Unified chronological timeline across Teaching Suite, QuestionForge, Assessment Suite |
 
-### Setup Tools (2)
+### Setup tools (2)
 
 | Tool | Purpose |
 |------|---------|
 | `project_init` | Create folder structure, copy methodology docs, initialise project state |
 | `init_profession` | Initialise workspace-level `Profession/Manifest/` (sibling to course folders) |
 
-### Source Tools (5)
+### Source tools (5)
 
 | Tool | Purpose |
 |------|---------|
@@ -136,7 +133,7 @@ All core tools enforce **workspace validation** via `--workspace` flag.
 | `source_remove` | Remove source by role |
 | `source_update_usage` | Track source usage |
 
-## Course Workspace Structure
+## Course workspace structure
 
 When `project_init` is called with `type: 'course'`, it creates this structure in the workspace:
 
@@ -165,12 +162,12 @@ When `project_init` is called with `type: 'course'`, it creates this structure i
 │  — Course material —
 ├── Styrdokument/                   # Syllabus, curriculum, commentary
 ├── Material/                       # Course material (own + imported)
-│   ├── WIP/                       # Work in progress (drafts)
-│   ├── Klart/                     # Ready for lesson
-│   │   ├── Presentationer/        # .pptx, .pdf
-│   │   ├── Övningar/              # Exercises, lab instructions
-│   │   └── Övrigt/                # Films, links, handouts
-│   └── Resurser/                  # Imported (others' material, references)
+│   ├── WIP/                        # Work in progress (drafts)
+│   ├── Klart/                      # Ready for lesson
+│   │   ├── Presentationer/         # .pptx, .pdf
+│   │   ├── Övningar/               # Exercises, lab instructions
+│   │   └── Övrigt/                 # Films, links, handouts
+│   └── Resurser/                   # Imported (others' material, references)
 ├── Exams/                          # Exams, QuestionForge material
 │
 │  — System —
@@ -182,7 +179,7 @@ When `project_init` is called with `type: 'course'`, it creates this structure i
 
 For non-course types (e.g., `lesson`), the legacy flat structure is used: `Reflections/`, `Lesson_Plans/`, `Ideas/`, etc.
 
-## MCP Ecosystem
+## MCP ecosystem
 
 Teaching Suite is one of several MCP servers that share the same Nextcloud workspace:
 
@@ -208,7 +205,7 @@ QuestionForge (qf-scaffolding-v2, qf-pipeline-v2)
 
 **Separation principle:** Teaching Suite handles the teacher's professional processes. Assessment data (student work, grades) stays in Assessment Suite's own workspace. Only *insights about teaching* flow back.
 
-## Workspace Security
+## Workspace security
 
 All file operations require a `--workspace` flag at server startup:
 
@@ -227,7 +224,7 @@ All file operations require a `--workspace` flag at server startup:
 - Path traversal attempts (e.g., `../../etc/passwd`) are blocked
 - The content scanner (`content-scanner.ts`) is an **advisory** keyword matcher: it flags a small set of Swedish privacy/exam-related terms in content and surfaces a warning. It does **not** detect names or personal numbers, does not anonymise, and never blocks an operation. It is a reminder, not a guarantee — anonymise sensitive data before importing it.
 
-## Key Commands
+## Key commands
 
 ```bash
 npm install    # Install dependencies
@@ -236,15 +233,15 @@ npm test       # Run the full test suite
 npm start      # Start MCP server
 ```
 
-## Design Principles
+## Design principles
 
 1. **Methodology = Pedagogik** (markdown files for Claude Desktop)
-2. **Core Tools = Teknik** (generic MCP tools)
+2. **Core tools = Teknik** (generic MCP tools)
 3. **Claude Desktop = Orkestrering** (reads methodology, uses tools)
 4. **Teacher THINKS, MCP STRUCTURES**
 5. **Never start from scratch** (build on history)
 
-## Language Policy
+## Language policy
 
 This project is **deliberately bilingual**. Swedish teachers are the primary
 audience, so teacher-facing content stays in Swedish; the code stays in English
@@ -256,9 +253,9 @@ for international contributors. This is a design choice, not a translation backl
 - **English-language content** (README, CONTRIBUTING, international-facing docs): British English — see ADR-007 (`docs/decisions/ADR-007-bilingual-language-policy.md`)
 - **Why**: English code lowers the barrier for international contributors; Swedish UX and methodology because the teachers who use this tool think and work in Swedish. Translating the methodology to English would not serve the primary audience.
 
-## Session Workflow
+## Session workflow
 
-When to use session capture tools:
+When to use the session capture tools:
 
 1. **During conversation** — ideas emerge naturally
 2. **At session end** — `quick_save_session` to persist everything

@@ -129,7 +129,7 @@ The interesting part is the **methodology**, not the plumbing — three nested c
 Clone, build, and point it at a folder. It is an MCP server (Node.js) that runs inside Claude Desktop.
 
 - [Quick start](#quick-start) — install, build, test, and the Claude Desktop configuration
-- [CLAUDE.md](CLAUDE.md) — architecture and the full tool reference
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — architecture and the full tool reference
 
 ## Features
 
@@ -270,7 +270,7 @@ The real privacy guarantees are the `--workspace` lockdown and the absence of ne
 ## Documentation
 
 - [docs/TEACHER_GUIDE.md](docs/TEACHER_GUIDE.md) - How to work with Teaching Suite as a teacher
-- [CLAUDE.md](CLAUDE.md) - Architecture and tool reference
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture and tool reference
 - [ROADMAP.md](ROADMAP.md) - Direction towards 1.0
 - [CHANGELOG.md](CHANGELOG.md) - Release history
 - [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute

@@ -301,7 +301,7 @@ Extraktion (auto-pipeline) och tolkning (Gibbs) är kategoriskt olika kognitiva 
 - Auto-pipeline = "vad hände" (data, timing, begrepp, uppgifter — mekaniskt)
 - Gibbs = "vad betyder det" (meningsskapande, känslor, pedagogiska beslut — manuellt)
 
-Att bunta ihop dem skulle tvinga läraren genom hela pipelinen varje gång, och skulle blurra att de är olika saker. Separeringen respekterar `Teacher THINKS, MCP STRUCTURES`-principen från CLAUDE.md.
+Att bunta ihop dem skulle tvinga läraren genom hela pipelinen varje gång, och skulle blurra att de är olika saker. Separeringen respekterar `Teacher THINKS, MCP STRUCTURES`-principen från `docs/ARCHITECTURE.md`.
 
 ---
 
