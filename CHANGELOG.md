@@ -4,6 +4,12 @@ All notable changes to Teaching Suite are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **The architecture and tool reference moved from `CLAUDE.md` to `docs/ARCHITECTURE.md`.** Per ACDM ADR-017's dev-tooling boundary, agent-instruction files are local tooling and stay out of the public artefact — teaching-suite was the last public repo in the family still shipping its root `CLAUDE.md`. The content now lives in a human-facing `docs/ARCHITECTURE.md` (same reference, conventional home); `CLAUDE.md` is untracked and gitignored, and all links (README's developer door, TEACHER_GUIDE, EXAMPLES_POLICY, examples, methodology) point at the new location.
+
 ## [0.6.0] - 2026-07-07
 
 ### Added

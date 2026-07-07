@@ -27,5 +27,5 @@ Start with the walkthrough README.
 
 > **Note on language.** The reflection content is in Swedish — Teaching Suite's
 > primary audience is Swedish teachers, and teacher-facing artifacts stay in
-> Swedish (see the Language Policy in the root `CLAUDE.md`). The walkthrough
+> Swedish (see the Language policy in `docs/ARCHITECTURE.md`). The walkthrough
 > prose is in English.

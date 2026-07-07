@@ -251,4 +251,4 @@ not to automate the thinking away.
 ---
 
 *For the methodology, see the cycle folders in `methodology/` (`lesson/`, `course/`,
-`profession/`); for architecture and the full tool reference, see `CLAUDE.md`.*
+`profession/`); for architecture and the full tool reference, see `docs/ARCHITECTURE.md`.*
