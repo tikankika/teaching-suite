@@ -68,3 +68,6 @@ proto_test*
 
 # ACDM-specific (personal tooling, not project content)
 .claude/rules/acdm-workflow.md
+
+# ACDM rules — dev-tooling, gitignored downstream (ADR-017)
+.claude/rules/
